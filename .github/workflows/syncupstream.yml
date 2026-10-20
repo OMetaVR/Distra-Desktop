@@ -1,60 +1,54 @@
+# Fork-only workflow (see FORK.md). Merges upstream Equicord into main, but only
+# after the merged result validates, then publishes a release for the in-client updater.
 name: Sync with Upstream
-on:
-  schedule:
-    - cron: '0 */3 * * *'
-  workflow_dispatch:
 
-concurrency:
-  group: syncupstream-main
-  cancel-in-progress: false
+on:
+    schedule:
+        - cron: "15 */3 * * *"
+    workflow_dispatch:
 
 permissions:
-  contents: write
+    contents: write
+    issues: write
+    actions: write
+
+concurrency:
+    group: syncupstream-main
+    cancel-in-progress: false
 
 jobs:
-  sync:
-    runs-on: ubuntu-latest
-    outputs:
-      updated: ${{ steps.merge.outputs.updated }}
-      commit: ${{ steps.merge.outputs.commit }}
-    steps:
-      - uses: actions/checkout@v7
+    sync:
+        if: github.repository != 'Equicord/Equicord'
+        runs-on: ubuntu-latest
+        timeout-minutes: 60
+        outputs:
+            promoted: ${{ steps.sync.outputs.promoted }}
+            commit: ${{ steps.sync.outputs.commit }}
+            release: ${{ steps.sync.outputs.release }}
+        steps:
+            # A personal token is needed to push upstream merges that touch .github/workflows.
+            - uses: actions/checkout@v7
+              with:
+                  ref: main
+                  fetch-depth: 0
+                  token: ${{ secrets.PAT_TOKEN || github.token }}
+
+            - name: Setup PNPM
+              uses: pnpm/setup@v2.1.0
+              with:
+                  runtime: node@v24
+                  require-lockfile: true
+
+            - name: Merge, validate and promote
+              id: sync
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PUSHED_WITH_PAT: ${{ secrets.PAT_TOKEN != '' }}
+              run: bash .fork/sync.sh
+
+    release:
+        needs: sync
+        if: needs.sync.outputs.promoted == 'true' && needs.sync.outputs.release == 'true'
+        uses: ./.github/workflows/build.yml
         with:
-          fetch-depth: 0
-          ref: main
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: pnpm
-      - name: Merge upstream
-        id: merge
-        run: |
-          set -euo pipefail
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git remote add upstream https://github.com/Equicord/Equicord.git
-          git fetch upstream main
-          if git merge-base --is-ancestor upstream/main HEAD; then
-            echo "updated=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          git merge --no-edit upstream/main
-          echo "updated=true" >> "$GITHUB_OUTPUT"
-          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-      - name: Validate merged source
-        if: steps.merge.outputs.updated == 'true'
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm testTsc
-          pnpm buildStandalone
-          pnpm buildWebStandalone
-      - name: Push validated merge
-        if: steps.merge.outputs.updated == 'true'
-        run: git push origin HEAD:main
-  release:
-    needs: sync
-    if: needs.sync.outputs.updated == 'true'
-    uses: ./.github/workflows/build.yml
-    with:
-      ref: ${{ needs.sync.outputs.commit }}
+            ref: ${{ needs.sync.outputs.commit }}
