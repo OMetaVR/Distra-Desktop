@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Toasts } from "@webpack/common";
+import { showToast } from "@webpack/common";
 
 import { ExportData, MEDIA_TYPES, StoredMediaData } from "../types";
 import { checkSameUrl, getMediaData, saveMediaData } from "./mediaManager";
@@ -42,26 +42,10 @@ export async function exportData(): Promise<void> {
             await DiscordNative.fileManager.saveWithDialog(data, fileName);
         }
 
-        Toasts.show({
-            message: "Successfully exported favorites",
-            type: Toasts.Type.SUCCESS,
-            id: Toasts.genId(),
-            options: {
-                duration: 3000,
-                position: Toasts.Position.BOTTOM
-            }
-        });
+        showToast({ text: "Successfully exported favorites", variant: "success", duration: 3000, position: "bottom" });
     } catch (error) {
         console.error("Failed to export favorites:", error);
-        Toasts.show({
-            message: `Failed to export favorites: ${error}`,
-            type: Toasts.Type.FAILURE,
-            id: Toasts.genId(),
-            options: {
-                duration: 5000,
-                position: Toasts.Position.BOTTOM
-            }
-        });
+        showToast({ text: `Failed to export favorites: ${error}`, variant: "critical", duration: 5000, position: "bottom" });
     }
 }
 
@@ -183,26 +167,10 @@ async function processImport(jsonString: string): Promise<void> {
         const message = `Successfully imported ${totalNewMedia} media and ${totalNewCategories} categories` +
             (totalSkippedMedia > 0 ? ` (skipped ${totalSkippedMedia} duplicates)` : "");
 
-        Toasts.show({
-            message,
-            type: Toasts.Type.SUCCESS,
-            id: Toasts.genId(),
-            options: {
-                duration: 5000,
-                position: Toasts.Position.BOTTOM
-            }
-        });
+        showToast({ text: message, variant: "success", duration: 5000, position: "bottom" });
     } catch (error) {
         console.error("Failed to import favorites:", error);
-        Toasts.show({
-            message: `Failed to import favorites: ${error}`,
-            type: Toasts.Type.FAILURE,
-            id: Toasts.genId(),
-            options: {
-                duration: 5000,
-                position: Toasts.Position.BOTTOM
-            }
-        });
+        showToast({ text: `Failed to import favorites: ${error}`, variant: "critical", duration: 5000, position: "bottom" });
     }
 }
 
@@ -246,14 +214,6 @@ export async function importData(): Promise<void> {
         }
     } catch (error) {
         console.error("Failed to open import dialog:", error);
-        Toasts.show({
-            message: `Failed to open import dialog: ${error}`,
-            type: Toasts.Type.FAILURE,
-            id: Toasts.genId(),
-            options: {
-                duration: 5000,
-                position: Toasts.Position.BOTTOM
-            }
-        });
+        showToast({ text: `Failed to open import dialog: ${error}`, variant: "critical", duration: 5000, position: "bottom" });
     }
 }

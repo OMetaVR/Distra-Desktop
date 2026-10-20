@@ -5,7 +5,7 @@
  */
 
 import { RenderModalProps } from "@vencord/discord-types";
-import { Button, FluxDispatcher, Modal, React, TextInput, Toasts } from "@webpack/common";
+import { Button, FluxDispatcher, Modal, React, showToast, TextInput } from "@webpack/common";
 
 import { Category, Media, MediaType } from "../types";
 import { createCategory, editCategory } from "../utils/categoryManager";
@@ -63,11 +63,7 @@ export function CollectionModal({ type, collection, mediaToAdd, onClose, transit
             }
 
             FluxDispatcher.dispatch({ type: "FM_MEDIA_UPDATED" });
-            Toasts.show({
-                message: isEditing ? "Collection updated" : "Collection created",
-                type: Toasts.Type.SUCCESS,
-                id: Toasts.genId()
-            });
+            showToast({ text: isEditing ? "Collection updated" : "Collection created", variant: "success" });
             onClose();
         } catch (err) {
             setError("Failed to save collection");

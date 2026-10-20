@@ -9,9 +9,9 @@ import { copyWithToast } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 import { saveFile } from "@utils/web";
-import { Message } from "@vencord/discord-types";
+import { Message, ToastVariant } from "@vencord/discord-types";
 import { MessageType } from "@vencord/discord-types/enums";
-import { ChannelStore, GuildStore, openModal,React, RelationshipStore, SnowflakeUtils, Toasts, UserProfileStore, UserStore } from "@webpack/common";
+import { ChannelStore, GuildStore, openModal,React, RelationshipStore, showToast as originalShowToast, SnowflakeUtils, UserProfileStore, UserStore } from "@webpack/common";
 
 import {
     clearDetections,
@@ -577,12 +577,8 @@ function isTeachingRecord(record: DetectionRecord) {
     return record.verdict === "confirmed" || record.highestScore >= teacherScoreThreshold;
 }
 
-function showToast(message: string, type: (typeof Toasts.Type)[keyof typeof Toasts.Type]) {
-    Toasts.show({
-        id: Toasts.genId(),
-        message,
-        type
-    });
+function showToast(text: string, variant: ToastVariant) {
+    originalShowToast({ text, variant });
 }
 
 function getSyncBaseUrl() {
@@ -961,7 +957,7 @@ async function flushPendingSync(showSuccessToast: boolean) {
                 validationErrorCount
                     ? `Bot sync finished with ${validationErrorCount} validation errors. Upserted ${upsertResult.upserted} records and deleted ${deleteResult.deleted}.`
                     : `Bot sync finished. Upserted ${upsertResult.upserted} records and deleted ${deleteResult.deleted}.`,
-                validationErrorCount ? Toasts.Type.MESSAGE : Toasts.Type.SUCCESS
+                validationErrorCount ? "default" : "success"
             );
         }
 
@@ -978,7 +974,7 @@ async function flushPendingSync(showSuccessToast: boolean) {
         if (showSuccessToast) {
             showToast(
                 error instanceof Error ? error.message : "Bot sync failed.",
-                Toasts.Type.FAILURE
+                "critical"
             );
         } else {
             logger.warn("Failed to sync pending Warden detections to the bot.", error);
@@ -1000,7 +996,7 @@ async function flushPendingSync(showSuccessToast: boolean) {
 async function runFullSync(showSuccessToast: boolean) {
     if (!canSyncToBot()) {
         if (showSuccessToast) {
-            showToast("Configure the bot sync URL and secret first.", Toasts.Type.FAILURE);
+            showToast("Configure the bot sync URL and secret first.", "critical");
         }
 
         return null;
@@ -1009,7 +1005,7 @@ async function runFullSync(showSuccessToast: boolean) {
     if (syncInFlight) {
         queuedFullSync = true;
         if (showSuccessToast) {
-            showToast("A sync is already running. Full sync queued.", Toasts.Type.MESSAGE);
+            showToast("A sync is already running. Full sync queued.", "default");
         }
 
         return null;
@@ -1033,7 +1029,7 @@ async function runFullSync(showSuccessToast: boolean) {
                 validationErrorCount
                     ? `Full bot sync finished with ${validationErrorCount} validation errors. Upserted ${upsertResult.upserted} records and deleted ${deleteResult.deleted}.`
                     : `Full bot sync finished. Upserted ${upsertResult.upserted} records and deleted ${deleteResult.deleted}.`,
-                validationErrorCount ? Toasts.Type.MESSAGE : Toasts.Type.SUCCESS
+                validationErrorCount ? "default" : "success"
             );
         }
 
@@ -1050,7 +1046,7 @@ async function runFullSync(showSuccessToast: boolean) {
         if (showSuccessToast) {
             showToast(
                 error instanceof Error ? error.message : "Full bot sync failed.",
-                Toasts.Type.FAILURE
+                "critical"
             );
         } else {
             logger.warn("Failed to run full Warden bot sync.", error);
@@ -1071,7 +1067,7 @@ async function runFullSync(showSuccessToast: boolean) {
 
 async function restoreDetectionsFromBot() {
     if (!canSyncToBot()) {
-        showToast("Configure the bot sync URL and secret first.", Toasts.Type.FAILURE);
+        showToast("Configure the bot sync URL and secret first.", "critical");
         return;
     }
 
@@ -1089,11 +1085,11 @@ async function restoreDetectionsFromBot() {
         pendingDeleteAuthorIds.clear();
         pendingUpsertAuthorIds.clear();
 
-        showToast(`Restored ${records.length} detection records from the bot.`, Toasts.Type.SUCCESS);
+        showToast(`Restored ${records.length} detection records from the bot.`, "success");
     } catch (error) {
         showToast(
             error instanceof Error ? error.message : "Failed to restore detections from the bot.",
-            Toasts.Type.FAILURE
+            "critical"
         );
     }
 }
@@ -1438,7 +1434,7 @@ async function exportDetections() {
     const json = JSON.stringify(payload, null, 2);
     const filename = `nsfw-invite-spam-detections-${new Date().toISOString().slice(0, 10)}.json`;
     await saveJsonFile(filename, json);
-    showToast(`Exported ${payload.counts.total} stored detection records.`, Toasts.Type.SUCCESS);
+    showToast(`Exported ${payload.counts.total} stored detection records.`, "success");
 }
 
 async function copyConfirmedIds() {
@@ -1451,7 +1447,7 @@ async function clearStoredDetections() {
     await clearDetections();
     records.forEach(record => queueDelete(record.authorId));
     void flushPendingSync(false);
-    showToast("Cleared stored Warden detections.", Toasts.Type.SUCCESS);
+    showToast("Cleared stored Warden detections.", "success");
 }
 
 async function setReviewState(authorId: string, reviewState: DetectionReviewState) {
@@ -1611,7 +1607,7 @@ export default definePlugin({
                     const label = result.globalName || result.username;
                     showToast(
                         `${label} flagged as ${next.verdict} invite spam (score ${result.sample.score}).`,
-                        next.verdict === "confirmed" ? Toasts.Type.FAILURE : Toasts.Type.MESSAGE
+                        next.verdict === "confirmed" ? "critical" : "default"
                     );
                 }
             } catch (error) {

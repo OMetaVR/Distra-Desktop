@@ -13,7 +13,7 @@ import { Button } from "@components/Button";
 import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { FluxDispatcher, Menu, openModal,React, Toasts } from "@webpack/common";
+import { FluxDispatcher, Menu, openModal,React, showToast } from "@webpack/common";
 
 import { AudioIcon, FavoriteMediaChatBarButton, FileIcon, ImageIcon, VideoIcon } from "./components/ChatBarButton";
 import { CollectionModal } from "./components/CollectionModal";
@@ -134,11 +134,7 @@ async function addMediaToCollection(mediaInfo: { url: string; type: MediaType; p
 
     FluxDispatcher.dispatch({ type: "FM_MEDIA_UPDATED" });
 
-    Toasts.show({
-        message: "Added to collection",
-        type: Toasts.Type.SUCCESS,
-        id: Toasts.genId()
-    });
+    showToast({ text: "Added to collection", variant: "success" });
 }
 
 const addFavoriteMediaContextMenuPatch: NavContextMenuPatchCallback = (children, props) => {
@@ -179,11 +175,7 @@ const addFavoriteMediaContextMenuPatch: NavContextMenuPatchCallback = (children,
                         url,
                         favorited: false
                     });
-                    Toasts.show({
-                        message: `Removed from ${type} favorites`,
-                        type: Toasts.Type.SUCCESS,
-                        id: Toasts.genId()
-                    });
+                    showToast({ text: `Removed from ${type} favorites`, variant: "success" });
                 } else {
                     const media: Media = {
                         url,
@@ -198,11 +190,7 @@ const addFavoriteMediaContextMenuPatch: NavContextMenuPatchCallback = (children,
                         url,
                         favorited: true
                     });
-                    Toasts.show({
-                        message: `Added to ${type} favorites`,
-                        type: Toasts.Type.SUCCESS,
-                        id: Toasts.genId()
-                    });
+                    showToast({ text: `Added to ${type} favorites`, variant: "success" });
                 }
             }}
         />
@@ -250,11 +238,7 @@ const addFavoriteMediaContextMenuPatch: NavContextMenuPatchCallback = (children,
 };
 
 async function clearCache() {
-    Toasts.show({
-        message: "Clear cache functionality will be implemented in task 4",
-        type: Toasts.Type.MESSAGE,
-        id: Toasts.genId()
-    });
+    showToast({ text: "Clear cache functionality will be implemented in task 4" });
 }
 
 export const settings = definePluginSettings({

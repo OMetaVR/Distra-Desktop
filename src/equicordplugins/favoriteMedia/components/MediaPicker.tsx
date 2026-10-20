@@ -6,7 +6,7 @@
 
 import { Logger } from "@utils/Logger";
 import { findByPropsLazy } from "@webpack";
-import { ExpressionPickerStore, FluxDispatcher, React, Toasts } from "@webpack/common";
+import { ExpressionPickerStore, FluxDispatcher, React, showToast } from "@webpack/common";
 
 import { settings, shouldUploadAsFile as shouldUploadAsFileSetting } from "..";
 import { Category, Media, MediaPickerProps, MediaPickerState, MediaType } from "../types";
@@ -118,11 +118,7 @@ export function MediaPicker({ type }: MediaPickerProps) {
                 ExpressionPickerStore.closeExpressionPicker();
             } catch (error) {
                 logger.error("Failed to upload media:", error);
-                Toasts.show({
-                    message: `Failed to upload ${mediaType}: ${error}`,
-                    type: Toasts.Type.FAILURE,
-                    id: Toasts.genId()
-                });
+                showToast({ text: `Failed to upload ${mediaType}: ${error}`, variant: "critical" });
             }
         } else {
             if (shiftClick) {

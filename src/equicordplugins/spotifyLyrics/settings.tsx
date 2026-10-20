@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import { Button, Paragraph } from "@components/index";
 import { useAwaiter, useIntersection } from "@utils/react";
 import { OptionType } from "@utils/types";
-import { openModal, showToast, Toasts, useMemo } from "@webpack/common";
+import { openModal, showToast, useMemo } from "@webpack/common";
 
 import { clearLyricsCache, getLyricsCount, removeTranslations } from "./api";
 import { Lyrics } from "./components/lyrics";
@@ -69,7 +69,7 @@ const settings = definePluginSettings({
         options: languages,
         onChange: async () => {
             await removeTranslations();
-            showToast("Translations cleared", Toasts.Type.SUCCESS);
+            showToast({ text: "Translations cleared", variant: "success" });
         }
     },
     LyricsConversion: {
@@ -127,7 +127,7 @@ const settings = definePluginSettings({
                 variant="dangerPrimary"
                 onClick={() => {
                     clearLyricsCache();
-                    showToast("Lyrics cache purged", Toasts.Type.SUCCESS);
+                    showToast({ text: "Lyrics cache purged", variant: "success" });
                 }}
             >
                 Purge Cache
