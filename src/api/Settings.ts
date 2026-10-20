@@ -72,7 +72,7 @@ export interface Settings {
     | undefined;
     windowsMaterial: "none" | "mica" | "tabbed" | "acrylic";
     disableMinSize: boolean;
-    winNativeTitleBar: boolean;
+    nativeTitleBar: boolean;
     plugins: {
         [plugin: string]: {
             enabled: boolean;
@@ -100,8 +100,6 @@ export interface Settings {
         settingsSync: boolean;
         settingsSyncVersion: number;
     };
-
-    ignoreResetWarning: boolean;
 }
 
 const DefaultSettings: Settings = {
@@ -124,7 +122,7 @@ const DefaultSettings: Settings = {
     macosVibrancyStyle: undefined,
     windowsMaterial: "none",
     disableMinSize: false,
-    winNativeTitleBar: false,
+    nativeTitleBar: false,
     plugins: {},
 
     uiElements: {
@@ -146,8 +144,6 @@ const DefaultSettings: Settings = {
         settingsSync: false,
         settingsSyncVersion: 0
     },
-
-    ignoreResetWarning: false,
 };
 
 const settings = !IS_REPORTER ? VencordNative.settings.get() : {} as Settings;

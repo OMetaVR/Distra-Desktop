@@ -698,6 +698,18 @@ export const Devs = /* #__PURE__*/ Object.freeze({
     Kaede: {
         name: "Kaede",
         id: 1492642701320126504n
+    },
+    c0nnorgg: {
+        name: "c0nnorgg",
+        id: 1088882977985003620n,
+    },
+    f3tch: {
+        name: "f3tch",
+        id: 1016388460929626174n
+    },
+    imnotplayinginreallife: {
+        name: "I'm not playing in real life",
+        id: 841939724306087986n
     }
 } satisfies Record<string, Dev>);
 
@@ -1450,6 +1462,14 @@ export const EquicordDevs = Object.freeze({
     heart_menace: {
         name: "heart_menace",
         id: 281162701303185408n
+    },
+    tie: {
+        name: "tie",
+        id: 783087994419675201n
+    },
+    itzmeshadow999: {
+        name: "ItzMeShadow999",
+        id: 1065604516399026176n
     },
 } satisfies Record<string, Dev>);
 

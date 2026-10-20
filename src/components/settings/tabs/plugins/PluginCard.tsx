@@ -13,7 +13,7 @@ import { classNameFactory } from "@utils/css";
 import { getTheme, Theme } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import { Plugin } from "@utils/types";
-import { React, showToast, Toasts } from "@webpack/common";
+import { React, showToast } from "@webpack/common";
 
 import { PluginMeta } from "~plugins";
 
@@ -82,9 +82,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             settings.enabled = false;
 
             const msg = `Error while ${wasEnabled ? "stopping" : "starting"} plugin ${plugin.name}`;
-            showToast(msg, Toasts.Type.FAILURE, {
-                position: Toasts.Position.BOTTOM,
-            });
+            showToast({ text: msg, variant: "critical", position: "bottom" });
 
             return;
         }

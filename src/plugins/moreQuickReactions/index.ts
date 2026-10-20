@@ -14,10 +14,11 @@ const settings = definePluginSettings({
     reactionCount: {
         description: "Number of reactions (0-42)",
         type: OptionType.NUMBER,
+        restartNeeded: true,
         default: 5
     },
     frequentEmojis: {
-        description: "Use frequently used emojis instead of favourite emojis",
+        description: "Use frequently used emojis instead of favorite emojis",
         type: OptionType.BOOLEAN,
         restartNeeded: true,
         default: true
@@ -65,7 +66,7 @@ export default definePlugin({
                 replace: ".slice(0,$self.reactionCount)"
             }
         },
-        // Remove favourite emojis from being inserted at the start of the reaction list
+        // Remove favorite emojis from being inserted at the start of the reaction list
         {
             find: "this.favoriteEmojisWithoutFetchingLatest.concat",
             replacement: {

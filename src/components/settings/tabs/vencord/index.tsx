@@ -26,7 +26,8 @@ import { classNameFactory } from "@utils/css";
 import { Margins } from "@utils/margins";
 import { isAnyPluginDev } from "@utils/misc";
 import { relaunch } from "@utils/native";
-import { Alerts, GuildMemberStore, React, useMemo, UserStore } from "@webpack/common";
+import { promptToRestart } from "@utils/promptToRestart";
+import { GuildMemberStore, React, useMemo, UserStore } from "@webpack/common";
 
 import { DonateButtonComponent } from "./DonateButton";
 import { MacOSVibrancySettings } from "./MacVibrancySettings";
@@ -49,7 +50,7 @@ type KeysOfType<Object, Type> = {
 }[keyof Object];
 
 function Switches() {
-    const settings = useSettings(["useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "winNativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
+    const settings = useSettings(["useQuickCss", "enableReactDevtools", "mainWindowFrameless", "frameless", "nativeTitleBar", "transparent", "winCtrlQ", "disableMinSize"]);
 
     const Switches = [
         {
@@ -71,7 +72,7 @@ function Switches() {
                 restartRequired: true,
             }
             : {
-                key: "winNativeTitleBar",
+                key: "nativeTitleBar",
                 title: "Use Windows' native title bar instead of Discord's custom one",
                 description: "Replace Discord's custom title bar with the standard Windows title bar. This may improve compatibility with some window management tools.",
                 restartRequired: true,
@@ -141,13 +142,7 @@ function Switches() {
                     settings[key] = v;
 
                     if (restartRequired) {
-                        Alerts.show({
-                            title: "Restart Required",
-                            body: "A restart is required to apply this change",
-                            confirmText: "Restart now",
-                            cancelText: "Later!",
-                            onConfirm: relaunch
-                        });
+                        promptToRestart("relaunch");
                     }
                 }}
             />
