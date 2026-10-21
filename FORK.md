@@ -36,6 +36,13 @@ string literals, template literals and JSX text, never identifiers, imports, sto
 - `src/distraplugins/fakeBadges/` - Distra plugin: self-assigned Discord badges, stored as invisible tag characters
   (`{DB:<codes>}`) in the user's bio and shown to other Distra users with a "fake" tooltip. Badge codes in `badges.ts`
   are stored in bios, so never change or reuse one.
+- `src/distraplugins/iconPacks/` - Distra plugin: Distra for iOS's icon packs (Plumpy, Iconsax) on desktop. Downloads each
+  pack's redesign icons (rosiecord plus the additions in OMetaVR/Distra `iconpacks/`) into DataStore. A patch on every icon
+  component (`size:"md"` destructure) swaps the artwork for a mask of the pack's icon; another hands it Discord's named icon
+  registry. Pack ids and `additionsVersion` must match iOS's `src/lib/iconpackDownloads.ts`.
+- `src/distraplugins/customFonts/` - Distra plugin: Distra for iOS's Font Loader on desktop (Google Fonts or .ttf/.otf links,
+  separate text and code fonts, headings, messages-only scope, size, weight, line spacing, matching gg sans). Registers
+  FontFace objects under Discord's own family names. Its settings use iOS's `FontLoaderSettings` shape for future sync.
 
 ### Distra plugin category
 
@@ -67,6 +74,8 @@ The fork version, compared with upstream:
 - Lists changes between the installed commit and the release commit, not `HEAD`.
 - `getAsarPath()` finds the asar whether running from inside the asar or a directory, and `applyUpdate` writes to
   `<asar>.tmp` then renames it into place.
+- Requests go through Electron's `net.fetch` (system certificates and proxies; Node's fetch broke on Windows antivirus
+  HTTPS scanning), GitHub rate limits get a readable error, and the updater UI shows the error's `message`.
 
 When upstream restructures this file, keep upstream's structure (function names, the `Updater` export) and re-apply
 these behaviors inside it.
@@ -78,6 +87,8 @@ these behaviors inside it.
 - `src/equicordplugins/discordDevBanner/components/makeDevBanner.tsx`: fills in `{equicordName}`, which upstream
   never replaces.
 - `src/plugins/_core/settings.tsx`: falls back to `"top"` when `settingsLocation` is not a string.
+- `src/equicordplugins/pingNotifications/index.tsx`: uses `UserGuildSettingsStore.isChannelMuted`, since Discord removed
+  `channel.isMuted()`.
 - `src/equicordplugins/musicControls/spotify/PlayerComponent.tsx`: one-line fork tweak.
 - `misc/install.sh`, `scripts/runInstaller.mjs`: download the installer from `OMetaVR/Distra-Installer`.
 - `others/Equilotl`: installer submodule.

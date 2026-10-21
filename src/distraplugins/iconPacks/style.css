@@ -1,0 +1,44 @@
+.vc-icon-packs-packs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.vc-icon-packs-pack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--background-base-lower);
+}
+
+.vc-icon-packs-active {
+    border-color: var(--control-brand-foreground);
+}
+
+.vc-icon-packs-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.vc-icon-packs-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.vc-icon-packs-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.vc-icon-packs-preview-icon {
+    width: 24px;
+    height: 24px;
+    background: var(--interactive-text-default);
+}
