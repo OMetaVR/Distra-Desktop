@@ -11,8 +11,8 @@ automatically; the fork's own changes sit on top. Everything listed here must su
 - `src/equicordplugins/followUser/`
 - `src/equicordplugins/spotifyLyrics/`
 - `src/equicordplugins/betterSpotifyCard/`
-- `src/equicordplugins/expandableBadges/` - undoes Discord's six badge profile cutoff or makes it expandable.
 - `src/wardenplugins/nsfwInviteSpamDetector/` - Warden plugin.
+- `src/wardenplugins/expandableBadges/` - Warden plugin: undoes Discord's six badge profile cutoff or makes it expandable.
 
 ### Warden plugin category
 
