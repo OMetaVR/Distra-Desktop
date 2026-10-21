@@ -1,0 +1,24 @@
+.vc-expandable-badges-toggle {
+    display: flex;
+    align-items: center;
+    height: 20px;
+    min-width: 20px;
+    padding: 0 1px 0 3px;
+    border-radius: var(--radius-xs);
+    background: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out, background-color 0.1s ease-in-out;
+}
+
+.vc-expandable-badges-toggle:hover,
+.vc-expandable-badges-toggle:focus-visible {
+    background: var(--background-mod-normal);
+    color: var(--text-default);
+}
+
+.vc-expandable-badges-count {
+    color: var(--text-default);
+}
