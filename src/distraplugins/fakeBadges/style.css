@@ -1,0 +1,105 @@
+.vc-fake-badges-preview {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--background-base-lower);
+    box-sizing: border-box;
+}
+
+.vc-fake-badges-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+}
+
+.vc-fake-badges-row-badge {
+    cursor: grab;
+    border-radius: var(--radius-xs);
+}
+
+.vc-fake-badges-dragging {
+    opacity: 0.4;
+}
+
+.vc-fake-badges-badge {
+    display: block;
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.vc-fake-badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+}
+
+.vc-fake-badges-tile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    background: var(--background-mod-subtle);
+    color: var(--text-default);
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
+}
+
+.vc-fake-badges-tile:hover {
+    background: var(--background-mod-normal);
+}
+
+.vc-fake-badges-selected {
+    border-color: var(--brand-500);
+    background: var(--background-mod-strong);
+}
+
+.vc-fake-badges-tile-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.vc-fake-badges-tile-name {
+    flex: 1;
+    min-width: 0;
+}
+
+.vc-fake-badges-tile-position {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: var(--brand-500);
+    color: var(--white-500);
+    font-size: 11px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+.vc-fake-badges-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 16px;
+    margin-top: 16px;
+}
+
+.vc-fake-badges-actions {
+    display: flex;
+    gap: 8px;
+}

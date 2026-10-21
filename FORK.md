@@ -33,6 +33,9 @@ string literals, template literals and JSX text, never identifiers, imports, sto
 - `src/distraplugins/nsfwInviteSpamDetector/` - Distra plugin. It syncs with the Warden bot, so its `/internal/warden`
   endpoint, `x-warden-secret` header and `VencordWardenInviteSpamDetector` database name must keep their names.
 - `src/distraplugins/expandableBadges/` - Distra plugin: undoes Discord's six badge profile cutoff or makes it expandable.
+- `src/distraplugins/fakeBadges/` - Distra plugin: self-assigned Discord badges, stored as invisible tag characters
+  (`{DB:<codes>}`) in the user's bio and shown to other Distra users with a "fake" tooltip. Badge codes in `badges.ts`
+  are stored in bios, so never change or reuse one.
 
 ### Distra plugin category
 
