@@ -1,34 +1,40 @@
-# [<img src="./browser/icon.png" width="40" align="left" alt="Equicord">](https://github.com/Equicord/Equicord) Equicord 2 (OMG!!! 2)
+# [<img src="./browser/icon.png" width="40" align="left" alt="Distra">](https://github.com/OMetaVR/Distra-Desktop) Distra Desktop
 
-[![Equibop](https://img.shields.io/badge/Equibop-grey?style=flat)](https://github.com/Equicord/Equibop)
-[![Tests](https://github.com/OMetaVR/Equicord/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/Equicord/Equicord/actions/workflows/test.yml)
-[![Discord](https://img.shields.io/discord/1173279886065029291.svg?color=768AD4&label=Discord&logo=discord&logoColor=white)](https://equicord.org/discord)
+[![Tests](https://github.com/OMetaVR/Distra-Desktop/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/OMetaVR/Distra-Desktop/actions/workflows/test.yml)
 
-Equicord is a fork of [Vencord](https://github.com/Vendicated/Vencord), with over 300+ plugins. This is my own public fork of that fork because I heard you like forks with your forks, so I forked your fork so I could fork plugins and add them to my fork.
+Distra is a Discord desktop client mod. It's built on [Equicord](https://github.com/Equicord/Equicord), which is a fork of
+[Vencord](https://github.com/Vendicated/Vencord), and keeps in sync with Equicord automatically while adding its own plugins.
+The iOS client lives at [OMetaVR/Distra](https://github.com/OMetaVR/Distra).
 
-You CANNOT join the equicord Discord server for commits, changes, chatting, or support. This is fully unofficial!!! If you ignore this warning, we will laugh at you!
+This is a personal project and not affiliated with Equicord or Vencord. Please don't take Distra issues to their Discord
+servers or issue trackers.
 
 ### Included Plugins
 
-Our included plugins can be found [here](https://equicord.org/plugins). You can also find a list of plugins for this specific fork at the end of this readme.
+Distra ships Equicord's plugins, which are listed [here](https://equicord.org/plugins), plus its own, listed at the end of
+this readme.
 
-There are also going to be custom made plugins developed by myself, if any user wants to submit them to equicord or vencord, or refactor the code, you have my permission with the caveat that you add me to the author list and credit is given.
+If you want to submit one of the Distra plugins to Equicord or Vencord, or refactor its code, you have my permission as
+long as you add me to the authors and give credit.
 
 ## Installing / Uninstalling
 
+Use the [Distra Installer](https://github.com/OMetaVR/Distra-Installer). Builds are unsigned, so Windows SmartScreen and
+macOS Gatekeeper will ask you to allow them the first time.
+
 Windows
 
-| | X64 | ARM64 |
-| --- | --- | --- |
-| GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.exe) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.exe) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli.exe) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64.exe) |
+| | X64 |
+| --- | --- |
+| GUI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller.exe) |
+| CLI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli.exe) |
 
 MacOS
 
-| | Universal | X64 | ARM64 |
-| --- | --- | --- | --- |
-| GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl.dmg) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x64.dmg) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64.dmg) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-universal) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-x64) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-arm64) |
+| | X64 | ARM64 |
+| --- | --- | --- |
+| GUI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-x64.dmg) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-arm64.dmg) |
+| CLI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli-darwin-amd64) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli-darwin-arm64) |
 
 The CLI builds are plain binaries, so run `chmod +x <file>` after downloading.
 
@@ -36,16 +42,16 @@ Linux
 
 | | X64 | ARM64 |
 | --- | --- | --- |
-| Combined GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-arm64) |
-| X11 GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-x11-arm64) |
-| Wayland GUI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/Equilotl-wayland-arm64) |
-| CLI | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux) | [Download](https://github.com/Equicord/Equilotl/releases/latest/download/EquilotlCli-linux-arm64) |
+| Combined GUI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-arm64) |
+| X11 GUI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-x11) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-x11-arm64) |
+| Wayland GUI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-wayland) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstaller-wayland-arm64) |
+| CLI | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli-linux) | [Download](https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli-linux-arm64) |
 
 ```shell
-bash -c "$(curl -sS https://raw.githubusercontent.com/Equicord/Equilotl/refs/heads/main/install.sh)"
+sh -c "$(curl -sS https://raw.githubusercontent.com/OMetaVR/Distra-Installer/main/install.sh)"
 ```
 
-## Installing Equicord Devbuild
+## Installing a Distra dev build
 
 ### Dependencies
 
@@ -59,13 +65,13 @@ Install `pnpm`:
 npm i -g pnpm
 ```
 
-> :exclamation: **IMPORTANT** Make sure you aren't using an admin/root terminal from here onwards. It **will** mess up your Discord/Equicord instance and you **will** most likely have to reinstall.
+> :exclamation: **IMPORTANT** Make sure you aren't using an admin/root terminal from here onwards. It **will** mess up your Discord/Distra instance and you **will** most likely have to reinstall.
 
-Clone Equicord:
+Clone Distra:
 
 ```shell
-git clone https://github.com/OMetaVR/Equicord
-cd Equicord
+git clone https://github.com/OMetaVR/Distra-Desktop
+cd Distra-Desktop
 ```
 
 Install dependencies:
@@ -74,25 +80,25 @@ Install dependencies:
 pnpm install --frozen-lockfile
 ```
 
-Build Equicord:
+Build Distra:
 
 ```shell
 pnpm build
 ```
 
-Inject Equicord into your desktop client:
+Inject Distra into your desktop client:
 
 ```shell
 pnpm inject
 ```
 
-Build Equicord for web:
+Build Distra for web:
 
 ```shell
 pnpm buildWeb
 ```
 
-After building Equicord's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser’s guide for installing custom extensions, if supported.
+After building Distra's web extension, locate the appropriate ZIP file in the `dist` directory and follow your browser’s guide for installing custom extensions, if supported.
 
 Note: Firefox extension zip requires Firefox for developers
 
@@ -119,15 +125,15 @@ Mentioning it does not imply any affiliation with or endorsement by Discord Inc.
 Vencord is not connected to Equicord and as such, all donation links go to Vendicated's donation link.
 
 <details>
-<summary>Using Equicord and thus this fork violates Discord's terms of service</summary>
+<summary>Using Distra, like any client mod, violates Discord's terms of service</summary>
 
 Client modifications are against Discord’s Terms of Service.
 
 However, Discord is pretty indifferent about them and there are no known cases of users getting banned for using client mods without malicious intent! So you should generally be fine if you don’t use plugins that implement abusive behaviour. But no worries, all inbuilt plugins are safe to use!
 
-Regardless, if your account is essential to you and getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to Equicord), just to be safe.
+Regardless, if your account is essential to you and getting disabled would be a disaster for you, you should probably not use any client mods (not exclusive to Distra), just to be safe.
 
-Additionally, make sure not to post screenshots with Equicord (and any other clients) in a server where you might get banned for it.
+Additionally, make sure not to post screenshots with Distra (and any other clients) in a server where you might get banned for it.
 
 </details>
 

@@ -274,6 +274,10 @@ function EquicordSettings() {
             <WindowsMaterialSettings />
 
             <NotificationSection />
+
+            <Paragraph className={Margins.top20}>
+                Distra is based on Equicord and Vencord.
+            </Paragraph>
         </SettingsTab >
     );
 }

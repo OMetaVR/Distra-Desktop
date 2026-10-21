@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name            Equicord
+// @name            Distra
 // @description     A Discord client mod - Web version
 // @version         %version%
-// @author          Equicord (https://github.com/Equicord)
-// @namespace       https://github.com/Equicord/Equicord
-// @supportURL      https://github.com/Equicord/Equicord
+// @author          Distra (https://github.com/OMetaVR)
+// @namespace       https://github.com/OMetaVR/Distra-Desktop
+// @supportURL      https://github.com/OMetaVR/Distra-Desktop/issues
 // @icon            https://raw.githubusercontent.com/Equicord/Equicord/refs/heads/main/browser/icon.png
 // @license         GPL-3.0
 // @match           *://*.discord.com/*

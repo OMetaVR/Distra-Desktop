@@ -2,7 +2,7 @@
 
 # Configuration
 INSTALLER_PATH="$HOME/.equilotl"
-GITHUB_URL="https://github.com/OMetaVR/Equilotl/releases/latest/download/EquilotlCli-Linux"
+GITHUB_URL="https://github.com/OMetaVR/Distra-Installer/releases/latest/download/DistraInstallerCli-linux"
 PRIVILEGE_CMDS=("sudo" "doas")
 DEBUG=false
 LOG_FILE="$(dirname "$(realpath "$0")")/equicordinstalldebug.log"

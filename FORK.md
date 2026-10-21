@@ -1,7 +1,26 @@
-# OMetaVR/Equicord fork
+# Distra Desktop (OMetaVR/Distra-Desktop)
 
-This is a fork of [Equicord/Equicord](https://github.com/Equicord/Equicord). Upstream `main` is merged in
-automatically; the fork's own changes sit on top. Everything listed here must survive an upstream merge.
+Distra Desktop is a fork of [Equicord/Equicord](https://github.com/Equicord/Equicord), shown to users as **Distra**.
+Upstream `main` is merged in automatically; the fork's own changes sit on top. Everything listed here must survive an
+upstream merge.
+
+## Branding
+
+The source keeps upstream's "Equicord" text so merges stay conflict free. `scripts/build/branding.mjs`, registered in
+`commonOpts.plugins` in `scripts/build/common.mjs`, rewrites user-facing text to Distra at build time. It only touches
+string literals, template literals and JSX text, never identifiers, imports, storage keys or URLs.
+
+- Rules, exceptions and the display name constant (`CLIENT_NAME`) all live in `branding.mjs`.
+- Kept as Equicord on purpose: Equicord's donor, contributor and translator programs, its team, support server and
+  cloud backend, the "Equicord Plugin" marker on Equicord-made plugins, the supportHelper and EquicordHelper plugins,
+  and data folder names.
+- Never rename functional names: the `Equicord` data folder, `equicord.asar`, `EQUICORD_*` environment variables,
+  storage keys, plugin names (they are settings keys), or the `// Equicord <hash>` build banner the installer reads.
+- New upstream text is rebranded automatically. When upstream adds text that names Equicord's own programs, add a
+  `KEEP` rule instead of editing the upstream file.
+- Outside `src/`, edited directly: `README.md`, `browser/manifest*.json`, `browser/userscript.meta.js`,
+  `scripts/runInstaller.mjs` and `misc/install.sh` (Distra Installer downloads).
+- The installer is [OMetaVR/Distra-Installer](https://github.com/OMetaVR/Distra-Installer), a fork of Equilotl.
 
 ## Customizations
 
@@ -29,7 +48,7 @@ A fourth plugin directory, `src/wardenplugins/`, alongside `plugins`, `equicordp
 ### Badges
 
 - `badges.json` (repo root) and `browser/*.png|gif`: fork badge data and images.
-- `src/plugins/_api/badges/index.tsx`: loads `https://raw.githubusercontent.com/OMetaVR/Equicord/main/badges.json`
+- `src/plugins/_api/badges/index.tsx`: loads `https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/main/badges.json`
   as `CustomBadges` and exposes `getCustomBadges`.
 - `src/api/Badges.ts`: adds `getCustomBadges` badges and gives every badge a stable `id`.
 
@@ -50,9 +69,12 @@ these behaviors inside it.
 ### Small fixes
 
 - `src/plugins/_core/noTrack.ts`: disables Sentry by returning instead of throwing.
+- `src/components/settings/tabs/vencord/index.tsx`: "Distra is based on Equicord and Vencord." credit line.
+- `src/equicordplugins/discordDevBanner/components/makeDevBanner.tsx`: fills in `{equicordName}`, which upstream
+  never replaces.
 - `src/plugins/_core/settings.tsx`: falls back to `"top"` when `settingsLocation` is not a string.
 - `src/equicordplugins/musicControls/spotify/PlayerComponent.tsx`: one-line fork tweak.
-- `misc/install.sh`: downloads the installer from `OMetaVR/Equilotl`.
+- `misc/install.sh`, `scripts/runInstaller.mjs`: download the installer from `OMetaVR/Distra-Installer`.
 - `others/Equilotl`: installer submodule.
 - `pnpm-workspace.yaml`: `enableGlobalVirtualStore: false`.
 - `vitest.config.ts`: fork test config.

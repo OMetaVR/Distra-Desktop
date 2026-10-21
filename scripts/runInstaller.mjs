@@ -25,7 +25,7 @@ import { Readable } from "stream";
 import { finished } from "stream/promises";
 import { fileURLToPath } from "url";
 
-const BASE_URL = "https://github.com/Equicord/Equilotl/releases/latest/download/";
+const BASE_URL = "https://github.com/OMetaVR/Distra-Installer/releases/latest/download/";
 
 const BASE_DIR = join(dirname(fileURLToPath(import.meta.url)), "..");
 const FILE_DIR = join(BASE_DIR, "dist", "Installer");
@@ -38,20 +38,16 @@ function byArch(files) {
 function getFilename() {
     switch (process.platform) {
         case "win32":
-            return byArch({
-                arm64: "EquilotlCli-arm64.exe",
-                default: "EquilotlCli.exe"
-            });
+            return "DistraInstallerCli.exe";
         case "darwin":
             return byArch({
-                x64: "EquilotlCli-x64",
-                arm64: "EquilotlCli-arm64",
-                default: "EquilotlCli-universal"
+                arm64: "DistraInstallerCli-darwin-arm64",
+                default: "DistraInstallerCli-darwin-amd64"
             });
         case "linux":
             return byArch({
-                arm64: "EquilotlCli-linux-arm64",
-                default: "EquilotlCli-Linux"
+                arm64: "DistraInstallerCli-linux-arm64",
+                default: "DistraInstallerCli-linux"
             });
         default:
             throw new Error("Unsupported platform: " + process.platform);

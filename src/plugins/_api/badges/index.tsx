@@ -36,7 +36,7 @@ import { EquicordDonorModal, EquicordTranslatorModal, VencordDonorModal } from "
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const EQUICORD_CONTRIBUTOR_BADGE = "https://equicord.org/assets/favicon.png";
 const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
-const WARDEN_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/OMetaVR/Equicord/refs/heads/main/browser/warden1.png";
+const WARDEN_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden1.png";
 
 const ContributorBadge: ProfileBadge = {
     id: "vencord_contributor_badge",
@@ -121,7 +121,7 @@ async function loadAllBadges(noCache = false) {
     const [vencordBadges, equicordBadges, customBadges] = await Promise.all([
         loadBadges("https://badges.vencord.dev/badges.json", noCache),
         loadBadges("https://badge.equicord.org/badges.json", noCache),
-        loadBadges("https://raw.githubusercontent.com/OMetaVR/Equicord/main/badges.json", noCache).catch(() => ({}))
+        loadBadges("https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/main/badges.json", noCache).catch(() => ({}))
     ]);
 
     DonorBadges = vencordBadges;

@@ -22,7 +22,7 @@ import sys
 import time
 from pathlib import Path
 
-REPO = os.environ.get("EQ_FORK_REPO", "OMetaVR/Equicord")
+REPO = os.environ.get("EQ_FORK_REPO", "OMetaVR/Distra-Desktop")
 UPSTREAM_URL = "https://github.com/Equicord/Equicord.git"
 WORKFLOW = "syncupstream.yml"
 MODEL = os.environ.get("EQ_FORK_MODEL", "claude-opus-5-5")

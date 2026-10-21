@@ -118,8 +118,8 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
         {
             condition: isWardenPlugin,
             src: getTheme() === Theme.Light
-                ? "https://raw.githubusercontent.com/OMetaVR/Equicord/refs/heads/main/browser/warden1.png"
-                : "https://raw.githubusercontent.com/OMetaVR/Equicord/refs/heads/main/browser/warden2.png",
+                ? "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden1.png"
+                : "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden2.png",
             alt: "Warden",
             title: "Warden Plugin",
             style: { width: 28, height: 28 }
