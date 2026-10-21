@@ -4,7 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { ContextMenuApi, FluxDispatcher, Menu, openModal,React } from "@webpack/common";
+import { parseUrl } from "@utils/misc";
+import { useIntersection } from "@utils/react";
+import { ContextMenuApi, FluxDispatcher, Menu, openModal, React } from "@webpack/common";
 
 import { settings } from "..";
 import { Category, MediaCardProps } from "../types";
@@ -12,9 +14,28 @@ import { getMediaData, saveMediaData } from "../utils/mediaManager";
 import { CollectionModal } from "./CollectionModal";
 import { StarButton } from "./StarButton";
 
+const MEDIA_PROXY = "media.discordapp.net";
+const THUMBNAIL_WIDTH = 480;
+
+// Discord's media proxy serves a small webp of any attachment, so the picker doesn't load full size files.
+function discordThumbnail(url: string): string | null {
+    const parsed = parseUrl(url);
+    if (!parsed || (parsed.host !== "cdn.discordapp.com" && parsed.host !== MEDIA_PROXY)) return null;
+    if (!/^\/(ephemeral-)?attachments\//.test(parsed.pathname)) return null;
+    parsed.host = MEDIA_PROXY;
+    parsed.searchParams.set("format", "webp");
+    parsed.searchParams.set("width", String(THUMBNAIL_WIDTH));
+    return parsed.toString();
+}
+
+// Clicks on media controls shouldn't reach the card, which would send the media.
+const keepInside = (e: React.SyntheticEvent) => e.stopPropagation();
+
 export function MediaCard({ media, type, onClick, onShiftClick, onDragStart }: MediaCardProps) {
     const [showControls, setShowControls] = React.useState(false);
     const [collections, setCollections] = React.useState<Category[]>([]);
+    const [thumbnailFailed, setThumbnailFailed] = React.useState(false);
+    const [visibleRef, isVisible] = useIntersection(true);
     const videoRef = React.useRef<HTMLVideoElement>(null);
     const audioRef = React.useRef<HTMLAudioElement>(null);
     const mediaVolume = (settings.store.mediaVolume as number) / 100;
@@ -135,26 +156,61 @@ export function MediaCard({ media, type, onClick, onShiftClick, onDragStart }: M
 
     const renderThumbnail = () => {
         if (type === "image" || type === "gif") {
+            const thumbnail = type === "image" && !thumbnailFailed ? discordThumbnail(media.url) : null;
             return (
                 <img
-                    src={media.url}
+                    src={thumbnail ?? media.url}
                     alt={media.name}
                     className="fm-media-thumbnail"
+                    loading="lazy"
+                    decoding="async"
                     draggable={false}
+                    onError={thumbnail ? () => setThumbnailFailed(true) : undefined}
                 />
             );
         }
 
         if (type === "video") {
+            const still = media.poster ?? (thumbnailFailed ? null : discordThumbnail(media.url));
+            if (showControls) {
+                return (
+                    <video
+                        ref={videoRef}
+                        src={media.url}
+                        poster={still ?? undefined}
+                        className="fm-media-thumbnail"
+                        controls
+                        draggable={false}
+                        onClick={keepInside}
+                    />
+                );
+            }
+            if (still) {
+                return (
+                    <img
+                        src={still}
+                        alt={media.name}
+                        className="fm-media-thumbnail"
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        onError={() => setThumbnailFailed(true)}
+                    />
+                );
+            }
+            // No thumbnail available: load just enough of the video for its first frame, once it scrolls into view.
             return (
-                <video
-                    ref={videoRef}
-                    src={media.url}
-                    poster={media.poster}
-                    className="fm-media-thumbnail"
-                    controls={showControls}
-                    draggable={false}
-                />
+                <div ref={visibleRef} className="fm-media-video-placeholder">
+                    {isVisible && (
+                        <video
+                            src={`${media.url}#t=0.1`}
+                            className="fm-media-thumbnail"
+                            preload="metadata"
+                            muted
+                            draggable={false}
+                        />
+                    )}
+                </div>
             );
         }
 
@@ -169,6 +225,7 @@ export function MediaCard({ media, type, onClick, onShiftClick, onDragStart }: M
                             src={media.url}
                             controls
                             className="fm-media-audio-controls"
+                            onClick={keepInside}
                         />
                     )}
                 </div>
@@ -195,7 +252,7 @@ export function MediaCard({ media, type, onClick, onShiftClick, onDragStart }: M
             className="fm-media-card"
             onClick={handleClick}
             onContextMenu={handleContextMenu}
-            draggable
+            draggable={!showControls}
             onDragStart={handleDragStart}
             title={`${media.name}\nClick to send, Shift+Click to put in input\nRight-click for options`}
         >

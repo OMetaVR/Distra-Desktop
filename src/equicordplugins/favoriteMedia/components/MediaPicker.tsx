@@ -235,7 +235,8 @@ export function MediaPicker({ type }: MediaPickerProps) {
                         </div>
                     </div>
                 ) : (
-                    displayItems.items.map((item, index) => {
+                    <div className="fm-media-columns">
+                        {displayItems.items.map((item, index) => {
                         if ("color" in item) {
                             const cat = item as Category;
                             return (
@@ -258,7 +259,8 @@ export function MediaPicker({ type }: MediaPickerProps) {
                                 />
                             );
                         }
-                    })
+                        })}
+                    </div>
                 )}
             </div>
 

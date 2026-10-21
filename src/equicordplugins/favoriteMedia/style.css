@@ -83,14 +83,14 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     transition: color 0.15s ease, background 0.15s ease;
     flex-shrink: 0;
 }
 
 .fm-back-button:hover {
-    color: var(--interactive-hover);
-    background: var(--background-modifier-hover);
+    color: var(--interactive-text-hover);
+    background: var(--background-mod-normal);
 }
 
 .fm-back-button svg {
@@ -136,7 +136,7 @@
     background: transparent;
     border: none;
     border-radius: 8px;
-    color: var(--header-primary);
+    color: var(--text-strong);
     font-size: 16px;
     outline: none;
 }
@@ -152,7 +152,7 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--interactive-normal);
+    color: var(--interactive-text-default);
     padding: 4px;
     display: flex;
     align-items: center;
@@ -167,7 +167,7 @@
 }
 
 .fm-clear-search:hover {
-    color: var(--interactive-hover);
+    color: var(--interactive-text-hover);
 }
 
 .fm-media-counter {
@@ -182,9 +182,7 @@
 }
 
 .fm-media-grid {
-    column-count: 2;
-    column-gap: 8px;
-    overflow-y: auto;
+    overflow: hidden auto;
     flex: 1;
     min-height: 0;
     padding: 8px 12px;
@@ -194,6 +192,11 @@
 
 .fm-media-grid::-webkit-scrollbar {
     display: none;
+}
+
+.fm-media-columns {
+    column-count: 2;
+    column-gap: 8px;
 }
 
 .fm-empty-state {
@@ -229,7 +232,7 @@
 }
 
 .fm-category-card.fm-drag-over {
-    outline: 2px solid var(--brand-experiment);
+    outline: 2px solid var(--brand-500);
     outline-offset: -2px;
 }
 
@@ -281,7 +284,7 @@
     border-radius: 4px;
     cursor: pointer;
     overflow: visible;
-    background: var(--background-tertiary);
+    background: var(--background-base-lowest);
     margin-bottom: 8px;
     break-inside: avoid;
 }
@@ -303,6 +306,17 @@
     border-radius: 4px;
 }
 
+.fm-media-video-placeholder {
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    background: var(--background-base-lowest);
+}
+
+.fm-media-video-placeholder .fm-media-thumbnail {
+    height: 100%;
+    object-fit: cover;
+}
+
 .fm-media-icon-container {
     display: flex;
     flex-direction: column;
@@ -311,19 +325,19 @@
     min-height: 80px;
     padding: 12px;
     text-align: center;
-    background: var(--background-tertiary);
+    background: var(--background-base-lowest);
     border-radius: 4px;
 }
 
 .fm-media-icon {
     font-size: 32px;
     margin-bottom: 8px;
-    color: var(--header-primary);
+    color: var(--text-strong);
 }
 
 .fm-media-name {
     font-size: 11px;
-    color: var(--header-primary);
+    color: var(--text-strong);
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -334,7 +348,7 @@
 
 .fm-media-ext {
     font-size: 10px;
-    color: var(--text-normal);
+    color: var(--text-default);
     margin-top: 4px;
 }
 
@@ -376,7 +390,7 @@
 }
 
 .fm-chat-bar-button.active {
-    background: var(--background-modifier-selected);
+    background: var(--background-mod-strong);
     border-radius: 4px;
 }
 
@@ -387,7 +401,7 @@
 .fm-modal-title {
     font-size: 20px;
     font-weight: 600;
-    color: var(--header-primary);
+    color: var(--text-strong);
 }
 
 .fm-modal-content {
@@ -417,7 +431,7 @@
 
 .fm-modal-error {
     font-size: 12px;
-    color: var(--text-danger);
+    color: var(--text-feedback-critical);
     margin-top: 8px;
 }
 
@@ -448,7 +462,7 @@
 }
 
 .fm-cancel-btn {
-    color: var(--header-primary) !important;
+    color: var(--text-strong) !important;
 }
 
 .fm-pagination {
@@ -463,12 +477,19 @@
 .fm-pagination-button {
     padding: 4px 12px;
     cursor: pointer;
+    border: none;
     border-radius: 4px;
-    background: var(--background-secondary);
+    color: var(--text-default);
+    background: var(--background-mod-normal);
+}
+
+.fm-pagination-info {
+    color: var(--text-muted);
+    font-size: 13px;
 }
 
 .fm-pagination-button:hover {
-    background: var(--background-secondary-alt);
+    background: var(--background-mod-strong);
 }
 
 .fm-pagination-button:disabled {
