@@ -72,13 +72,13 @@ export function UserPluginsCard({ totalUserPlugins, enabledUserPlugins }) {
         );
 }
 
-export function WardenPluginsCard({ totalWardenPlugins, enabledWardenPlugins }) {
-    if (totalWardenPlugins === 0)
+export function DistraPluginsCard({ totalDistraPlugins, enabledDistraPlugins }) {
+    if (totalDistraPlugins === 0)
         return (
             <div className="vc-plugin-stats vc-stockplugins-stats-card">
                 <div className="vc-plugin-stats-card-container ">
                     <div className="vc-plugin-stats-card-section">
-                        <BaseText size="md" weight="semibold">Total Warden Plugins</BaseText>
+                        <BaseText size="md" weight="semibold">Total Distra Plugins</BaseText>
                         <Tooltip
                             text={
                                 <img
@@ -90,7 +90,7 @@ export function WardenPluginsCard({ totalWardenPlugins, enabledWardenPlugins }) 
                             {tooltipProps => (
                                 <span style={{ display: "inline", position: "relative" }}>
                                     <BaseText size="xl" weight="bold" {...tooltipProps}>
-                                        {totalWardenPlugins}
+                                        {totalDistraPlugins}
                                     </BaseText>
                                 </span>
                             )}
@@ -104,13 +104,13 @@ export function WardenPluginsCard({ totalWardenPlugins, enabledWardenPlugins }) 
             <div className="vc-plugin-stats vc-stockplugins-stats-card">
                 <div className="vc-plugin-stats-card-container">
                     <div className="vc-plugin-stats-card-section">
-                        <BaseText size="md" weight="semibold">Enabled Warden Plugins</BaseText>
-                        <BaseText size="xl" weight="bold">{enabledWardenPlugins}</BaseText>
+                        <BaseText size="md" weight="semibold">Enabled Distra Plugins</BaseText>
+                        <BaseText size="xl" weight="bold">{enabledDistraPlugins}</BaseText>
                     </div>
                     <div className="vc-plugin-stats-card-divider"></div>
                     <div className="vc-plugin-stats-card-section">
-                        <BaseText size="md" weight="semibold">Total Warden Plugins</BaseText>
-                        <BaseText size="xl" weight="bold">{totalWardenPlugins}</BaseText>
+                        <BaseText size="md" weight="semibold">Total Distra Plugins</BaseText>
+                        <BaseText size="xl" weight="bold">{totalDistraPlugins}</BaseText>
                     </div>
                 </div>
             </div>

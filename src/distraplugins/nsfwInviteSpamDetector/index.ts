@@ -5,6 +5,7 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
+import { EquicordDevs } from "@utils/constants";
 import { copyWithToast } from "@utils/discord";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
@@ -86,7 +87,7 @@ const DEFAULT_IGNORED_CHANNEL_PATTERNS = [
     "^closed-\\d+$"
 ].join("\n");
 
-const WARDEN_SOURCE = "NSFWInviteSpamDetector";
+const DETECTOR_SOURCE = "NSFWInviteSpamDetector";
 const DEFAULT_SYNC_BASE_URL = "http://127.0.0.1:3000/internal/warden";
 const DEFAULT_SYNC_DEBOUNCE_SECONDS = 8;
 const DEFAULT_BACKGROUND_SYNC_MINUTES = 30;
@@ -830,7 +831,7 @@ async function sendDeleteBatch(authorIds: string[]) {
     if (!authorIds.length) {
         return {
             success: true,
-            source: WARDEN_SOURCE,
+            source: DETECTOR_SOURCE,
             requested: 0,
             deleted: 0
         } satisfies DeleteBatchResponse;
@@ -841,7 +842,7 @@ async function sendDeleteBatch(authorIds: string[]) {
 
     for (const ids of chunk(authorIds, SYNC_BATCH_SIZE)) {
         const response = await postToBot<DeleteBatchResponse>("/detections/delete-batch", {
-            source: WARDEN_SOURCE,
+            source: DETECTOR_SOURCE,
             authorIds: ids
         });
 
@@ -851,7 +852,7 @@ async function sendDeleteBatch(authorIds: string[]) {
 
     return {
         success: true,
-        source: WARDEN_SOURCE,
+        source: DETECTOR_SOURCE,
         requested,
         deleted
     } satisfies DeleteBatchResponse;
@@ -861,7 +862,7 @@ async function sendUpsertBatch(records: DetectionRecord[]) {
     if (!records.length) {
         return {
             success: true,
-            source: WARDEN_SOURCE,
+            source: DETECTOR_SOURCE,
             received: 0,
             upserted: 0,
             inserted: 0,
@@ -878,7 +879,7 @@ async function sendUpsertBatch(records: DetectionRecord[]) {
 
     for (const batch of chunk(records.map(toSyncedRecord), SYNC_BATCH_SIZE)) {
         const response = await postToBot<UpsertBatchResponse>("/detections/upsert-batch", {
-            source: WARDEN_SOURCE,
+            source: DETECTOR_SOURCE,
             records: batch
         });
 
@@ -893,7 +894,7 @@ async function sendUpsertBatch(records: DetectionRecord[]) {
 
     return {
         success: errors.length === 0,
-        source: WARDEN_SOURCE,
+        source: DETECTOR_SOURCE,
         received,
         upserted,
         inserted,
@@ -977,7 +978,7 @@ async function flushPendingSync(showSuccessToast: boolean) {
                 "critical"
             );
         } else {
-            logger.warn("Failed to sync pending Warden detections to the bot.", error);
+            logger.warn("Failed to sync pending detections to the bot.", error);
         }
 
         return null;
@@ -1049,7 +1050,7 @@ async function runFullSync(showSuccessToast: boolean) {
                 "critical"
             );
         } else {
-            logger.warn("Failed to run full Warden bot sync.", error);
+            logger.warn("Failed to run full bot sync.", error);
         }
 
         return null;
@@ -1073,7 +1074,7 @@ async function restoreDetectionsFromBot() {
 
     try {
         const response = await getFromBot<ExportResponse>("/detections/export", {
-            source: WARDEN_SOURCE
+            source: DETECTOR_SOURCE
         });
         const records = response.records
             .map(toDetectionRecordFromExport)
@@ -1407,7 +1408,7 @@ async function buildExportPayload() {
 
     return {
         generatedAt: new Date().toISOString(),
-        plugin: WARDEN_SOURCE,
+        plugin: DETECTOR_SOURCE,
         thresholds: {
             candidateScore: clampSetting(settings.store.candidateScore, 6),
             suspiciousScore: clampSetting(settings.store.suspiciousScore, 7),
@@ -1447,7 +1448,7 @@ async function clearStoredDetections() {
     await clearDetections();
     records.forEach(record => queueDelete(record.authorId));
     void flushPendingSync(false);
-    showToast("Cleared stored Warden detections.", "success");
+    showToast("Cleared stored detections.", "success");
 }
 
 async function setReviewState(authorId: string, reviewState: DetectionReviewState) {
@@ -1496,7 +1497,7 @@ async function openDetectionsModal() {
 export default definePlugin({
     name: "NSFWInviteSpamDetector",
     description: "Detects likely NSFW Discord invite spam, stores flagged accounts locally, and exports confirmed actor IDs.",
-    authors: [{ name: "Warden", id: 0n }],
+    authors: [EquicordDevs.mmeta],
     tags: ["Chat", "Utility"],
     settings,
 

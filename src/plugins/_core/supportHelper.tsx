@@ -170,7 +170,7 @@ async function generateDebugInfoMessage() {
         "Equibop DevBuild": IS_EQUIBOP && tryOrElse(() => VesktopNative.app.isDevBuild?.(), false),
         "Platform Spoofed": spoofInfo?.spoofed ?? false,
         "Has UserPlugins": Object.values(PluginMeta).some(m => m.userPlugin),
-        "Has WardenPlugins": Object.values(PluginMeta).some(m => m.wardenPlugin),
+        "Has DistraPlugins": Object.values(PluginMeta).some(m => m.distraPlugin),
         ">2 Weeks Outdated": BUILD_TIMESTAMP < Date.now() - 12096e5,
         [`Potentially Problematic Plugins: ${potentiallyProblematicPlugins.join(", ")}\n${potentiallyProblematicPluginsNote}`]: potentiallyProblematicPlugins.length
     };
@@ -219,9 +219,9 @@ function generatePluginList() {
     const enabledPlugins = Object.keys(plugins)
         .filter(p => isPluginEnabled(p) && !isApiPlugin(p));
 
-    const enabledStockPlugins = enabledPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.wardenPlugin).sort();
+    const enabledStockPlugins = enabledPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.distraPlugin).sort();
     const enabledUserPlugins = enabledPlugins.filter(p => PluginMeta[p]?.userPlugin).sort();
-    const enabledWardenPlugins = enabledPlugins.filter(p => PluginMeta[p]?.wardenPlugin).sort();
+    const enabledDistraPlugins = enabledPlugins.filter(p => PluginMeta[p]?.distraPlugin).sort();
 
     const user = UserStore.getCurrentUser();
 
@@ -254,10 +254,10 @@ function generatePluginList() {
             );
         }
 
-        if (enabledWardenPlugins.length) {
+        if (enabledDistraPlugins.length) {
             fileContent.push(
-                `Enabled Warden Plugins (${enabledWardenPlugins.length}):`,
-                ...enabledWardenPlugins.map(p => `  - ${p}`),
+                `Enabled Distra Plugins (${enabledDistraPlugins.length}):`,
+                ...enabledDistraPlugins.map(p => `  - ${p}`),
                 ""
             );
         }
@@ -281,8 +281,8 @@ function generatePluginList() {
         content += `**Enabled UserPlugins (${enabledUserPlugins.length}):**\n${makeCodeblock(enabledUserPlugins.join(", "))}`;
     }
 
-    if (enabledWardenPlugins.length) {
-        content += `**Enabled WardenPlugins (${enabledWardenPlugins.length}):**\n${makeCodeblock(enabledWardenPlugins.join(", "))}`;
+    if (enabledDistraPlugins.length) {
+        content += `**Enabled DistraPlugins (${enabledDistraPlugins.length}):**\n${makeCodeblock(enabledDistraPlugins.join(", "))}`;
     }
 
     return content;

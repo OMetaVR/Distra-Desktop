@@ -30,20 +30,22 @@ string literals, template literals and JSX text, never identifiers, imports, sto
 - `src/equicordplugins/followUser/`
 - `src/equicordplugins/spotifyLyrics/`
 - `src/equicordplugins/betterSpotifyCard/`
-- `src/wardenplugins/nsfwInviteSpamDetector/` - Warden plugin.
-- `src/wardenplugins/expandableBadges/` - Warden plugin: undoes Discord's six badge profile cutoff or makes it expandable.
+- `src/distraplugins/nsfwInviteSpamDetector/` - Distra plugin. It syncs with the Warden bot, so its `/internal/warden`
+  endpoint, `x-warden-secret` header and `VencordWardenInviteSpamDetector` database name must keep their names.
+- `src/distraplugins/expandableBadges/` - Distra plugin: undoes Discord's six badge profile cutoff or makes it expandable.
 
-### Warden plugin category
+### Distra plugin category
 
-A fourth plugin directory, `src/wardenplugins/`, alongside `plugins`, `equicordplugins` and `userplugins`.
+A fourth plugin directory, `src/distraplugins/`, alongside `plugins`, `equicordplugins` and `userplugins`.
 
-- `scripts/build/common.mjs`: `wardenplugins` in the `globPlugins` dir list and `wardenPlugin` in each `PluginMeta` entry.
-- `scripts/build/build.mjs`: `wardenplugins` in the natives dir list.
-- `src/modules.d.ts`: `wardenPlugin: boolean` on `PluginMeta`.
-- `src/plugins/_core/supportHelper.tsx`: "Has WardenPlugins" debug line and an "Enabled Warden Plugins" list.
-- `src/plugins/_api/badges/index.tsx`: `WardenPluginContributorBadge`.
+- `scripts/build/common.mjs`: `distraplugins` in the `globPlugins` dir list and `distraPlugin` in each `PluginMeta` entry.
+- `scripts/build/build.mjs`: `distraplugins` in the natives dir list.
+- `scripts/generatePluginList.ts`: `src/distraplugins` in the default dir list.
+- `src/modules.d.ts`: `distraPlugin: boolean` on `PluginMeta`.
+- `src/plugins/_core/supportHelper.tsx`: "Has DistraPlugins" debug line and an "Enabled Distra Plugins" list.
+- `src/plugins/_api/badges/index.tsx`: `DistraPluginContributorBadge`.
 - `src/components/settings/tabs/plugins/` (`index.tsx`, `PluginCard.tsx`, `PluginModal.tsx`, `PluginStatCards.tsx`):
-  plugin stat cards and Warden plugin display in the plugins tab.
+  plugin stat cards and Distra plugin display in the plugins tab.
 
 ### Badges
 

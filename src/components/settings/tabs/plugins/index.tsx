@@ -46,7 +46,7 @@ import Plugins, { ExcludedPlugins, PluginMeta } from "~plugins";
 
 import { PluginCard } from "./PluginCard";
 import { openWarningModal } from "./PluginModal";
-import { StockPluginsCard, UserPluginsCard, WardenPluginsCard } from "./PluginStatCards";
+import { DistraPluginsCard,StockPluginsCard, UserPluginsCard } from "./PluginStatCards";
 import { UIElementsButton } from "./UIElements";
 
 export const cl = classNameFactory("vc-plugins-");
@@ -105,7 +105,7 @@ const enum SearchStatus {
     VENCORD,
     NEW,
     USER_PLUGINS,
-    WARDEN_PLUGINS,
+    DISTRA_PLUGINS,
     API_PLUGINS
 }
 
@@ -197,7 +197,7 @@ export default function PluginSettings() {
         .toSorted((a, b) => Number(settings.plugins[b.name]?.isFavorite ?? false) - Number(settings.plugins[a.name]?.isFavorite ?? false));
 
     const hasUserPlugins = useMemo(() => !IS_STANDALONE && Object.values(PluginMeta).some(m => m.userPlugin), []);
-    const hasWardenPlugins = useMemo(() => Object.values(PluginMeta).some(m => m.wardenPlugin), []);
+    const hasDistraPlugins = useMemo(() => Object.values(PluginMeta).some(m => m.distraPlugin), []);
 
     const [searchValue, setSearchValue] = useState({ value: "", tags: [] as PluginTag[], status: SearchStatus.ALL });
 
@@ -232,8 +232,8 @@ export default function PluginSettings() {
             case SearchStatus.USER_PLUGINS:
                 if (!PluginMeta[plugin.name]?.userPlugin) return false;
                 break;
-            case SearchStatus.WARDEN_PLUGINS:
-                if (!PluginMeta[plugin.name]?.wardenPlugin) return false;
+            case SearchStatus.DISTRA_PLUGINS:
+                if (!PluginMeta[plugin.name]?.distraPlugin) return false;
                 break;
             case SearchStatus.API_PLUGINS:
                 if (!plugin.name.endsWith("API")) return false;
@@ -358,19 +358,19 @@ export default function PluginSettings() {
     }
 
     // Code directly taken from supportHelper.tsx
-    const { totalStockPlugins, totalUserPlugins, totalWardenPlugins, enabledStockPlugins, enabledUserPlugins, enabledWardenPlugins, enabledPlugins } = useMemo(() => {
+    const { totalStockPlugins, totalUserPlugins, totalDistraPlugins, enabledStockPlugins, enabledUserPlugins, enabledDistraPlugins, enabledPlugins } = useMemo(() => {
         const isApiPlugin = (plugin: string) => plugin.endsWith("API") || Plugins[plugin].required;
 
         const totalPlugins = Object.keys(Plugins).filter(p => !isApiPlugin(p));
         const enabledPlugins = Object.keys(Plugins).filter(p => isPluginEnabled(p) && !isApiPlugin(p));
 
-        const totalStockPlugins = totalPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.wardenPlugin && !Plugins[p].hidden).length;
+        const totalStockPlugins = totalPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.distraPlugin && !Plugins[p].hidden).length;
         const totalUserPlugins = totalPlugins.filter(p => PluginMeta[p]?.userPlugin).length;
-        const totalWardenPlugins = totalPlugins.filter(p => PluginMeta[p]?.wardenPlugin).length;
-        const enabledStockPlugins = enabledPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.wardenPlugin).length;
+        const totalDistraPlugins = totalPlugins.filter(p => PluginMeta[p]?.distraPlugin).length;
+        const enabledStockPlugins = enabledPlugins.filter(p => !PluginMeta[p]?.userPlugin && !PluginMeta[p]?.distraPlugin).length;
         const enabledUserPlugins = enabledPlugins.filter(p => PluginMeta[p]?.userPlugin).length;
-        const enabledWardenPlugins = enabledPlugins.filter(p => PluginMeta[p]?.wardenPlugin).length;
-        return { totalStockPlugins, totalUserPlugins, totalWardenPlugins, enabledStockPlugins, enabledUserPlugins, enabledWardenPlugins, enabledPlugins };
+        const enabledDistraPlugins = enabledPlugins.filter(p => PluginMeta[p]?.distraPlugin).length;
+        return { totalStockPlugins, totalUserPlugins, totalDistraPlugins, enabledStockPlugins, enabledUserPlugins, enabledDistraPlugins, enabledPlugins };
     }, [settings.plugins]);
     const pluginsToLoad = Math.min(36, plugins.length);
     const [visibleCount, setVisibleCount] = React.useState(pluginsToLoad);
@@ -402,9 +402,9 @@ export default function PluginSettings() {
                     totalUserPlugins={totalUserPlugins}
                     enabledUserPlugins={enabledUserPlugins}
                 />
-                <WardenPluginsCard
-                    totalWardenPlugins={totalWardenPlugins}
-                    enabledWardenPlugins={enabledWardenPlugins}
+                <DistraPluginsCard
+                    totalDistraPlugins={totalDistraPlugins}
+                    enabledDistraPlugins={enabledDistraPlugins}
                 />
             </div>
 
@@ -438,7 +438,7 @@ export default function PluginSettings() {
                             { label: "Show Vencord", value: SearchStatus.VENCORD },
                             { label: "Show New", value: SearchStatus.NEW },
                             hasUserPlugins && { label: "Show UserPlugins", value: SearchStatus.USER_PLUGINS },
-                            hasWardenPlugins && { label: "Show Warden", value: SearchStatus.WARDEN_PLUGINS },
+                            hasDistraPlugins && { label: "Show Distra", value: SearchStatus.DISTRA_PLUGINS },
                             { label: "Show API Plugins", value: SearchStatus.API_PLUGINS },
                         ].filter(isTruthy)}
                         serialize={String}

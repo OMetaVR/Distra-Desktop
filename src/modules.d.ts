@@ -24,7 +24,7 @@ declare module "~plugins" {
     export const PluginMeta: Record<string, {
         folderName: string;
         userPlugin: boolean;
-        wardenPlugin: boolean;
+        distraPlugin: boolean;
     }>;
     export const ExcludedPlugins: Record<string, PluginTarget>;
 }

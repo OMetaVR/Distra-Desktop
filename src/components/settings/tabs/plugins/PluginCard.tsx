@@ -37,7 +37,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
     const isEquicordPlugin = folderName.startsWith("src/equicordplugins/");
     const isVencordPlugin = folderName.startsWith("src/plugins/");
     const isUserPlugin = pluginMeta?.userPlugin ?? false;
-    const isWardenPlugin = pluginMeta?.wardenPlugin ?? false;
+    const isDistraPlugin = pluginMeta?.distraPlugin ?? false;
     const isModifiedPlugin = plugin.isModified ?? false;
 
     const isEnabled = () => isPluginEnabled(plugin.name);
@@ -116,12 +116,12 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             title: "User Plugin"
         },
         {
-            condition: isWardenPlugin,
+            condition: isDistraPlugin,
             src: getTheme() === Theme.Light
-                ? "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden1.png"
-                : "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden2.png",
-            alt: "Warden",
-            title: "Warden Plugin",
+                ? "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/distra1.png"
+                : "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/distra2.png",
+            alt: "Distra",
+            title: "Distra Plugin",
             style: { width: 28, height: 28 }
         }
     ];

@@ -36,7 +36,7 @@ import { EquicordDonorModal, EquicordTranslatorModal, VencordDonorModal } from "
 const CONTRIBUTOR_BADGE = "https://cdn.discordapp.com/emojis/1092089799109775453.png?size=64";
 const EQUICORD_CONTRIBUTOR_BADGE = "https://equicord.org/assets/favicon.png";
 const USERPLUGIN_CONTRIBUTOR_BADGE = "https://equicord.org/assets/icons/misc/userplugin.png";
-const WARDEN_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/warden1.png";
+const DISTRA_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/OMetaVR/Distra-Desktop/refs/heads/main/browser/distra1.png";
 
 const ContributorBadge: ProfileBadge = {
     id: "vencord_contributor_badge",
@@ -84,17 +84,17 @@ const UserPluginContributorBadge: ProfileBadge = {
     },
 };
 
-const WardenPluginContributorBadge: ProfileBadge = {
-    id: "warden_plugin_contributor_badge",
-    description: "Warden Plugin Contributor",
-    iconSrc: WARDEN_CONTRIBUTOR_BADGE,
+const DistraPluginContributorBadge: ProfileBadge = {
+    id: "distra_plugin_contributor_badge",
+    description: "Distra Plugin Contributor",
+    iconSrc: DISTRA_CONTRIBUTOR_BADGE,
     position: BadgePosition.START,
     shouldShow: ({ userId }) => {
         if (!IS_DEV) return false;
         const allPlugins = Object.values(Plugins);
         return allPlugins.some(p => {
             const pluginMeta = PluginMeta[p.name];
-            return pluginMeta?.wardenPlugin && p.authors.some(a => a.id.toString() === userId);
+            return pluginMeta?.distraPlugin && p.authors.some(a => a.id.toString() === userId);
         });
     },
     onClick: (_, { userId }) => openContributorModal(UserStore.getUser(userId)),
@@ -213,7 +213,7 @@ export default definePlugin({
         }
     },
 
-    userProfileBadges: [ContributorBadge, EquicordContributorBadge, UserPluginContributorBadge, WardenPluginContributorBadge],
+    userProfileBadges: [ContributorBadge, EquicordContributorBadge, UserPluginContributorBadge, DistraPluginContributorBadge],
 
     async start() {
         await loadAllBadges();
