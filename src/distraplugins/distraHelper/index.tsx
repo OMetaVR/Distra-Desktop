@@ -6,7 +6,7 @@
 
 import "./style.css";
 
-import { ApplicationCommandInputType, ApplicationCommandOptionType, findOption, sendBotMessage } from "@api/Commands";
+import { ApplicationCommandInputType, ApplicationCommandOptionType, commands as registeredCommands, findOption, sendBotMessage } from "@api/Commands";
 import { isPluginEnabled, isPluginRequired } from "@api/PluginManager";
 import { useSettings } from "@api/Settings";
 import { Button } from "@components/Button";
@@ -21,7 +21,8 @@ import { EquicordDevs, IS_MAC, IS_WINDOWS } from "@utils/constants";
 import { classNameFactory } from "@utils/css";
 import { sendMessage } from "@utils/discord";
 import definePlugin from "@utils/types";
-import { Message } from "@vencord/discord-types";
+import { CommandContext, Message } from "@vencord/discord-types";
+import { ChannelType } from "@vencord/discord-types/enums";
 import { Alerts, SettingsRouter, showToast, UserStore } from "@webpack/common";
 
 import plugins, { PluginMeta } from "~plugins";
@@ -46,6 +47,13 @@ const SECTIONS = {
 type SectionId = keyof typeof SECTIONS;
 
 const isOwner = () => UserStore.getCurrentUser()?.id === OWNER_ID;
+
+// Equicord's support commands, which normally only work in Equicord's server, also work in DMs with mmeta.
+const SUPPORT_COMMANDS = ["equicord-debug", "equicord-plugins"];
+const originalPredicates = new Map<string, ((ctx: CommandContext) => boolean) | undefined>();
+
+const isDmWithOwner = (ctx: CommandContext) =>
+    (ctx.channel.type === ChannelType.DM || ctx.channel.type === ChannelType.GROUP_DM) && ctx.channel.recipients.includes(OWNER_ID);
 
 function findPlugin(name: string) {
     const lower = name.trim().toLowerCase();
@@ -188,11 +196,29 @@ const noteOption = {
 
 export default definePlugin({
     name: "DistraHelper",
-    description: "Shows plugin cards and quick actions under Distra help messages from mmeta, and gives mmeta the commands that send them.",
+    description: "Shows plugin cards and quick actions under Distra help messages from mmeta, gives mmeta the commands that send them, and lets the support commands work in DMs with mmeta.",
     authors: [EquicordDevs.mmeta],
     enabledByDefault: true,
 
     renderMessageAccessory: props => <HelperCards message={props.message} />,
+
+    start() {
+        for (const name of SUPPORT_COMMANDS) {
+            const command = registeredCommands[name];
+            if (!command || originalPredicates.has(name)) continue;
+            const original = command.predicate;
+            originalPredicates.set(name, original);
+            command.predicate = ctx => (original?.(ctx) ?? true) || isDmWithOwner(ctx);
+        }
+    },
+
+    stop() {
+        for (const [name, original] of originalPredicates) {
+            const command = registeredCommands[name];
+            if (command) command.predicate = original;
+        }
+        originalPredicates.clear();
+    },
 
     commands: [
         {
