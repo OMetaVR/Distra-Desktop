@@ -21,14 +21,31 @@ import { Margins } from "@utils/margins";
 import { pluralise } from "@utils/misc";
 import { useAwaiter } from "@utils/react";
 import definePlugin, { OptionType } from "@utils/types";
-import { Clickable, Constants, FluxDispatcher, RestAPI, showToast, Tooltip, UserProfileStore, UserStore, useState, useStateFromStores } from "@webpack/common";
+import { filters, mapMangledModuleLazy } from "@webpack";
+import { Alerts, Clickable, Constants, FluxDispatcher, RestAPI, showToast, Tooltip, UserProfileStore, UserStore, useState, useStateFromStores } from "@webpack/common";
 
-import { BADGE_GROUPS, badgeIconUrl, BIO_MAX_LENGTH, decodeBadges, encodeBadges, FakeBadge, stripBadges } from "./badges";
+import { BADGE_GROUPS, badgeIconUrl, decodeBadges, encodeBadges, FakeBadge, stripBadges } from "./badges";
+
+// Discord is rolling out a longer About Me (300 instead of 190) behind an experiment, so ask it for the limit.
+const BioLength = mapMangledModuleLazy('"2026-08-user-bio-max-length"', {
+    getMaxLength: filters.byCode(".getConfig(")
+});
+
+function bioMaxLength(): number {
+    try {
+        return BioLength.getMaxLength({ location: "FakeBadges" }) ?? 190;
+    } catch {
+        return 190;
+    }
+}
 
 const cl = classNameFactory("vc-fake-badges-");
 const logger = new Logger("FakeBadges");
 
 const fakeName = (badge: FakeBadge) => `${badge.name} (fake, self-assigned with Distra)`;
+// Without Nitro, Discord turns custom emoji in an About Me into plain :name: text whenever it's saved.
+const CUSTOM_EMOJI = /<a?:\w+:\d+>/;
+
 const codesOf = (badges: FakeBadge[]) => badges.map(badge => badge.code).join("");
 
 function BadgeEditor() {
@@ -54,8 +71,10 @@ function BadgeEditor() {
     const selected = draft ?? saved;
     const newBio = encodeBadges(bio, selected);
     const badgeChars = newBio.length - stripBadges(bio).length;
-    const tooLong = newBio.length > BIO_MAX_LENGTH;
+    const maxLength = bioMaxLength();
+    const tooLong = newBio.length > maxLength;
     const dirty = codesOf(selected) !== codesOf(saved);
+    const losesEmoji = CUSTOM_EMOJI.test(bio) && !UserStore.getCurrentUser().premiumType;
 
     const toggle = (badge: FakeBadge) => setDraft(selected.includes(badge) ? selected.filter(b => b !== badge) : [...selected, badge]);
 
@@ -65,6 +84,17 @@ function BadgeEditor() {
         reordered.splice(selected.indexOf(target), 0, dragged);
         setDraft(reordered);
     };
+
+    function confirmSave() {
+        if (!losesEmoji) return save();
+        Alerts.show({
+            title: "Your custom emoji will turn into text",
+            body: "Your About Me has custom emoji, and without Nitro Discord turns them into plain :name: text whenever an About Me is saved, from any app. Save anyway?",
+            confirmText: "Save anyway",
+            cancelText: "Cancel",
+            onConfirm: save
+        });
+    }
 
     async function save() {
         setSaving(true);
@@ -145,6 +175,12 @@ function BadgeEditor() {
                 </div>
             ))}
 
+            {losesEmoji && (
+                <Notice.Warning className={Margins.top16}>
+                    Your About Me has custom emoji. Without Nitro, Discord turns them into plain :name: text when an About Me is saved, so saving here will do that.
+                </Notice.Warning>
+            )}
+
             {tooLong && (
                 <Notice.Warning className={Margins.top16}>
                     Your About Me doesn't have room for this many badges. Remove some badges or shorten your About Me.
@@ -153,12 +189,12 @@ function BadgeEditor() {
 
             <div className={cl("footer")}>
                 <BaseText size="sm" color={tooLong ? "text-feedback-critical" : "text-muted"}>
-                    About Me: {newBio.length} of {BIO_MAX_LENGTH} characters used, {badgeChars} by badges.
+                    About Me: {newBio.length} of {maxLength} characters used, {badgeChars} by badges.
                     {dirty && " Unsaved changes."}
                 </BaseText>
                 <div className={cl("actions")}>
                     {dirty && <Button variant="secondary" size="small" onClick={() => setDraft(null)}>Undo</Button>}
-                    <Button size="small" disabled={!dirty || tooLong || saving} onClick={save}>
+                    <Button size="small" disabled={!dirty || tooLong || saving} onClick={confirmSave}>
                         {saving ? "Saving..." : "Save to profile"}
                     </Button>
                 </div>

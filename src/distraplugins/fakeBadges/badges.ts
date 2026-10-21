@@ -13,8 +13,6 @@ export interface FakeBadge {
     icon: string;
 }
 
-export const BIO_MAX_LENGTH = 190;
-
 export const BADGE_GROUPS: { name: string; badges: FakeBadge[]; }[] = [
     {
         name: "Discord",
