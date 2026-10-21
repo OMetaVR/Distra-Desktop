@@ -60,6 +60,8 @@ export interface StarButtonProps {
     fromPicker?: boolean;
     uploaded?: boolean;
     target?: React.RefObject<HTMLElement>;
+    className?: string;
+    iconSize?: number;
 }
 
 export interface MediaPickerProps {

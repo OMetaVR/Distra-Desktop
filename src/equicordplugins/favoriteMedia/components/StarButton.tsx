@@ -15,13 +15,13 @@ const logger = new Logger("FavoriteMedia:StarButton");
 
 const FM_FAVORITE_MEDIA_EVENT = "FM_FAVORITE_MEDIA";
 
-function StarFilledIcon() {
+function StarFilledIcon({ size }: { size: number; }) {
     return (
         <svg
             className="fm-star-icon"
             viewBox="0 0 24 24"
-            width="24"
-            height="24"
+            width={size}
+            height={size}
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
@@ -32,13 +32,13 @@ function StarFilledIcon() {
     );
 }
 
-function StarUnfilledIcon() {
+function StarUnfilledIcon({ size }: { size: number; }) {
     return (
         <svg
             className="fm-star-icon"
             viewBox="0 0 24 24"
-            width="24"
-            height="24"
+            width={size}
+            height={size}
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
@@ -52,11 +52,7 @@ function StarUnfilledIcon() {
 }
 
 export function StarButton(props: StarButtonProps) {
-    const { type, url, poster, fromPicker = false, uploaded = false } = props;
-
-    if (!shouldShowStar(type)) {
-        return null;
-    }
+    const { type, url, poster, className = "fm-star-button", iconSize = 22 } = props;
 
     const [favorited, setFavorited] = React.useState(() => isFavorited(type, url));
 
@@ -115,6 +111,8 @@ export function StarButton(props: StarButtonProps) {
         }
     }, [type, url, poster, favorited]);
 
+    if (!shouldShowStar(type)) return null;
+
     const tooltipText = favorited ? "Remove from Favorites" : "Add to Favorites";
 
     return (
@@ -122,10 +120,12 @@ export function StarButton(props: StarButtonProps) {
             {tooltipProps => (
                 <div
                     {...tooltipProps}
-                    className={`fm-star-button${favorited ? " fm-favorited" : ""}`}
+                    role="button"
+                    aria-label={tooltipText}
+                    className={`${className}${favorited ? " fm-favorited" : ""}`}
                     onClick={handleClick}
                 >
-                    {favorited ? <StarFilledIcon /> : <StarUnfilledIcon />}
+                    {favorited ? <StarFilledIcon size={iconSize} /> : <StarUnfilledIcon size={iconSize} />}
                 </div>
             )}
         </Tooltip>

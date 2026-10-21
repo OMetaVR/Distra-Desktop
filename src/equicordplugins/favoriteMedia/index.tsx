@@ -13,7 +13,8 @@ import { Button } from "@components/Button";
 import { EquicordDevs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
-import { FluxDispatcher, Menu, openModal,React, showToast } from "@webpack/common";
+import { findCssClassesLazy } from "@webpack";
+import { FluxDispatcher, Menu, openModal, React, showToast } from "@webpack/common";
 
 import { AudioIcon, FavoriteMediaChatBarButton, FileIcon, ImageIcon, VideoIcon } from "./components/ChatBarButton";
 import { CollectionModal } from "./components/CollectionModal";
@@ -24,6 +25,7 @@ import { exportData, importData } from "./utils/importExport";
 import { addMedia, getMediaData, isFavorited, loadAllMediaData, mediaDataCache, removeMedia, saveMediaData } from "./utils/mediaManager";
 
 const logger = new Logger("FavoriteMedia");
+const HoverButtonClasses = findCssClassesLazy("hoverButton", "hoverButtonGroup");
 
 function getMediaFromContextMenu(props: any): { url: string; type: MediaType; poster?: string; } | null {
     const { message, itemSrc, itemHref, target } = props;
@@ -341,20 +343,43 @@ export function shouldUploadAsFile(type: MediaType): boolean {
     return settings.store[`${type}UploadAsFile`] as boolean;
 }
 
-function getMediaTypeFromItem(item: any): MediaType | null {
-    if (!item?.type) return null;
-    switch (item.type) {
-        case "IMAGE": return "image";
-        case "VIDEO": return "video";
-        case "AUDIO": return "audio";
-        case "OTHER": return "file";
-        default: return null;
-    }
+const ATTACHMENT_TYPES: Record<string, MediaType> = {
+    IMAGE: "image",
+    VIDEO: "video",
+    CLIP: "video",
+    AUDIO: "audio",
+    OTHER: "file"
+};
+
+const MEDIA_TABS: { type: MediaType; label: string; }[] = [
+    { type: "image", label: "Images" },
+    { type: "video", label: "Videos" },
+    { type: "audio", label: "Audio" },
+    { type: "file", label: "Files" }
+];
+
+interface ExpressionPickerTabProps {
+    id: string;
+    "aria-controls": string;
+    "aria-selected": boolean;
+    isActive: boolean;
+    viewType: string;
+    children: React.ReactNode;
 }
 
-function getUrlFromItem(item: any): string | null {
-    return item?.downloadUrl || item?.url || item?.src || null;
+interface AttachmentActionProps {
+    downloadURL?: string;
+    type?: string;
 }
+
+interface Embed {
+    type?: string;
+    image?: { url?: string; };
+    video?: { url?: string; };
+    thumbnail?: { url?: string; };
+}
+
+const isGif = (url: string) => url.toLowerCase().includes(".gif");
 
 export default definePlugin({
     name: "FavoriteMedia",
@@ -364,97 +389,90 @@ export default definePlugin({
 
     patches: [
         {
-            find: "stickersNavItem",
+            find: "#{intl::EXPRESSION_PICKER_CATEGORIES_A11Y_LABEL}",
             replacement: [
                 {
-                    match: /(\i=\(0,\i\.jsx\)\(\i,\{id:\i\.\i,"aria-controls":\i\.\i,"aria-selected":\i===\i\.\i\.EMOJI,isActive:\i===\i\.\i\.EMOJI,viewType:\i\.\i\.EMOJI,children:\i\.intl\.string\(\i\.t\.\i+\)\}\);)/,
-                    replace: "$1let vcFmImage=(0,r.jsx)(Q,{id:\"fm-image-tab\",\"aria-selected\":ec===\"fm-image\",isActive:ec===\"fm-image\",viewType:\"fm-image\",children:\"Images\"}),vcFmVideo=(0,r.jsx)(Q,{id:\"fm-video-tab\",\"aria-selected\":ec===\"fm-video\",isActive:ec===\"fm-video\",viewType:\"fm-video\",children:\"Videos\"}),vcFmAudio=(0,r.jsx)(Q,{id:\"fm-audio-tab\",\"aria-selected\":ec===\"fm-audio\",isActive:ec===\"fm-audio\",viewType:\"fm-audio\",children:\"Audio\"}),vcFmFile=(0,r.jsx)(Q,{id:\"fm-file-tab\",\"aria-selected\":ec===\"fm-file\",isActive:ec===\"fm-file\",viewType:\"fm-file\",children:\"Files\"});"
+                    // Adds the media tabs after the emoji tab, before the soundboard tab.
+                    match: /(?<=#{intl::EXPRESSION_PICKER_CATEGORIES_A11Y_LABEL}\),children:\[\i,\i,\i,)(?=\i&&\i&&\(0,\i\.jsx\)\((\i),\{id:\i\.\i,"aria-controls":\i\.\i,"aria-selected":(\i)===)/,
+                    replace: "...$self.renderTabs($1,$2),"
                 },
                 {
-                    match: /(\i\?\(0,\i\.jsxs\)\(\i\.Fragment,\{children:\[\i,\i,\i\]\}\):\(0,\i\.jsxs\)\(\i\.Fragment,\{children:\[\i,\i,\i\]\}\))/,
-                    replace: "(0,r.jsxs)(r.Fragment,{children:[...(($1).props.children),vcFmImage,vcFmVideo,vcFmAudio,vcFmFile]})"
-                },
-                {
-                    match: /(\i)===(\i\.\i)\.SOUNDBOARD\?/,
-                    replace: "$1.startsWith(\"fm-\")?$self.renderMediaPicker($1):$1===$2.SOUNDBOARD?"
+                    // Renders the picker body for the active media tab.
+                    match: /(?=(\i)===\i\.\i\.SOUNDBOARD\?\(0,\i\.jsx\)\("div")/,
+                    replace: "$self.renderMediaPicker($1),"
                 }
             ]
         },
         {
-            find: "mosaicItemContent",
+            // Adds the star to the hover buttons on message attachments, next to download.
+            find: '["VIDEO","CLIP","AUDIO"]',
             replacement: {
-                match: /(children:\i=>\i\(\i\)\}\):)(Y\(\))(,\i\]\}\)\}\})/,
-                replace: "$1(0,r.jsxs)('div',{style:{position:'relative'},children:[$2,$self.renderStarButton(n,a)]})$3"
+                match: /let \i=Math\.max\(0,(\i)\.length-\i\)/,
+                replace: "$self.addAttachmentStar($1,arguments[0]);$&"
             }
         },
         {
-            find: "renderEmbedContent",
-            replacement: {
-                match: "children:[null!=r?t.renderSuppressButton(r):null,o,l,c,u,d,_,p,m]",
-                replace: "children:[null!=r?t.renderSuppressButton(r):null,o,l,c,u,d,_,$self.renderEmbedStarButton(t.props.embed),p,m]"
-            }
-        },
-        {
-            find: "imageWrapper",
-            replacement: {
-                match: /(null!=G\?\(0,r\.jsx\)\(l\.P3F,\{className:g\.clickableWrapper,.*?,children:n\}\):n,)(null!=q\?\(0,r\.jsx\)\("div",\{className:g\.imageAccessory,children:q\}\):null\])/s,
-                replace: "$1$self.renderImageStarButton(e),$2"
-            }
+            find: "this.renderInlineMediaEmbed",
+            replacement: [
+                {
+                    match: /(?<=null!=\i\?(\i)\.renderSuppressButton\(\i\):null,)/,
+                    replace: "$self.renderEmbedStar($1.props.embed,!0),"
+                },
+                {
+                    match: /(?<=maxWidth:\i\},children:)(\i)\.renderMedia\((\i)\)/,
+                    replace: "[$1.renderMedia($2),$self.renderEmbedStar($1.props.embed)]"
+                }
+            ]
         }
     ],
 
-    renderStarButton(item: any, _message: any) {
-        const mediaType = getMediaTypeFromItem(item);
-        const url = getUrlFromItem(item);
+    renderTabs(Tab: React.ComponentType<ExpressionPickerTabProps>, activeView: string) {
+        return MEDIA_TABS.filter(({ type }) => isMediaTypeEnabled(type)).map(({ type, label }) => {
+            const viewType = `fm-${type}`;
+            return (
+                <Tab
+                    key={viewType}
+                    id={`${viewType}-tab`}
+                    aria-controls={`${viewType}-tab-panel`}
+                    aria-selected={activeView === viewType}
+                    isActive={activeView === viewType}
+                    viewType={viewType}
+                >
+                    {label}
+                </Tab>
+            );
+        });
+    },
 
-        if (!mediaType || !url) return null;
-        if (!shouldShowStar(mediaType)) return null;
+    addAttachmentStar(actions: React.ReactNode[], { downloadURL, type }: AttachmentActionProps) {
+        const mediaType = type && ATTACHMENT_TYPES[type];
+        if (!mediaType || !downloadURL || !shouldShowStar(mediaType)) return;
+        if (mediaType === "image" && isGif(downloadURL)) return;
 
-        if (mediaType === "image" && url.toLowerCase().includes(".gif")) return null;
-
-        return (
-            <div className="fm-star-overlay">
-                <StarButton type={mediaType} url={url} fromPicker={false} />
-            </div>
+        actions.push(
+            <StarButton key="fm-favorite" type={mediaType} url={downloadURL} className={HoverButtonClasses.hoverButton} iconSize={20} />
         );
     },
 
-    renderEmbedStarButton(embed: any) {
-        const url = embed?.image?.url || embed?.video?.url || embed?.thumbnail?.url;
-        if (!url) return null;
+    // Rich embeds put the star top right so it doesn't cover the title.
+    renderEmbedStar(embed: Embed, rich = false) {
+        if (embed.type === "gifv") return null;
 
-        const mediaType: MediaType = embed?.video ? "video" : "image";
-
-        if (!shouldShowStar(mediaType)) return null;
-
-        if (mediaType === "image" && url.toLowerCase().includes(".gif")) return null;
-
-        return (
-            <div className="fm-star-overlay">
-                <StarButton type={mediaType} url={url} fromPicker={false} />
-            </div>
-        );
-    },
-
-    renderImageStarButton(props: any) {
-        const url = props?.original || props?.src;
-        if (!url) return null;
-
-        const mediaType: MediaType = "image";
-        if (!shouldShowStar(mediaType)) return null;
-        if (url.toLowerCase().includes(".gif")) return null;
+        const mediaType: MediaType = embed.video ? "video" : "image";
+        const url = embed.video?.url ?? embed.image?.url ?? (embed.type === "image" ? embed.thumbnail?.url : undefined);
+        if (!url || !shouldShowStar(mediaType)) return null;
+        if (mediaType === "image" && isGif(url)) return null;
 
         return (
-            <div className="fm-star-overlay">
-                <StarButton type={mediaType} url={url} fromPicker={false} />
+            <div key="fm-star" className={rich ? "fm-star-overlay fm-star-overlay-end" : "fm-star-overlay"}>
+                <StarButton type={mediaType} url={url} />
             </div>
         );
     },
 
     renderMediaPicker(viewType: string) {
         if (!viewType.startsWith("fm-")) return null;
-        const mediaType = viewType.replace("fm-", "") as MediaType;
-        return <MediaPicker type={mediaType} />;
+        return <MediaPicker type={viewType.slice(3) as MediaType} />;
     },
 
     contextMenus: {

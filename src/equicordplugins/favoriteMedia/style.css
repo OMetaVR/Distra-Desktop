@@ -15,17 +15,17 @@
     pointer-events: none;
 }
 
-[class*="imageWrapper_"]:hover .fm-star-overlay,
-[class*="wrapperVideo_"]:hover .fm-star-overlay,
-[class*="videoWrapper_"]:hover .fm-star-overlay,
-[class*="embedVideo_"]:hover .fm-star-overlay,
-[class*="video_"]:hover .fm-star-overlay,
-[class*="wrapperAudio_"]:hover .fm-star-overlay,
-[class*="audioWrapper_"]:hover .fm-star-overlay,
-[class*="attachment_"]:hover .fm-star-overlay,
-[class*="attachmentInner_"]:hover .fm-star-overlay,
-[class*="fileAttachment_"]:hover .fm-star-overlay,
-[class*="mosaicItem"]:hover .fm-star-overlay {
+.fm-star-overlay-end {
+    left: auto;
+    inset-inline-end: 4px;
+}
+
+*:has(> .fm-star-overlay) {
+    position: relative;
+}
+
+:hover > .fm-star-overlay,
+.fm-star-overlay:focus-within {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
@@ -47,13 +47,8 @@
     color: #f0b132;
 }
 
-.fm-star-button.fm-favorited {
+.fm-favorited {
     color: #f0b132;
-}
-
-.fm-star-icon {
-    width: 22px;
-    height: 22px;
 }
 
 .fm-picker-container {
