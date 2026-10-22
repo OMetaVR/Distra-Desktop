@@ -5,6 +5,9 @@
  */
 
 import * as DataStore from "@api/DataStore";
+import { sleep } from "@utils/misc";
+
+import { PLUMPY_DESKTOP } from "./desktop/plumpy";
 
 // Same packs and ids as Distra for iOS, so the choice can sync between the two.
 export interface IconPackDefinition {
@@ -14,7 +17,17 @@ export interface IconPackDefinition {
     credit: string;
     /** Keep in step with iOS's additionsVersion. */
     additionsVersion: number;
-    base?: { repo: string; ref: string; dir: string; };
+    base?: { repo: string; ref: string; root: string; };
+    desktop?: DesktopAdditions;
+}
+
+export interface DesktopAdditions {
+    /** Bump when these change, so installed packs offer an update. */
+    version: number;
+    /** Discord desktop icons drawn with one of the pack's icons, or a file from the pack's repo, optionally mirrored. */
+    aliases: Record<string, ({ icon: string; } | { file: string; }) & { mirror?: boolean; }>;
+    /** Desktop icons drawn for this pack, as SVG. */
+    icons: Record<string, string>;
 }
 
 const IMAGES_DIR = "design/components/Icon/native/redesign/generated/images";
@@ -26,7 +39,8 @@ export const PACKS: IconPackDefinition[] = [
         description: "Rounded, filled icons",
         credit: "rosiecord (GPL-3.0)",
         additionsVersion: 2,
-        base: { repo: "acquitelol/rosiecord", ref: "master", dir: `Packs/Plumpy/${IMAGES_DIR}` }
+        base: { repo: "acquitelol/rosiecord", ref: "master", root: "Packs/Plumpy" },
+        desktop: PLUMPY_DESKTOP
     },
     {
         id: "Iconsax",
@@ -43,6 +57,7 @@ const CONCURRENCY = 12;
 
 export interface StoredPack {
     additionsVersion: number;
+    desktopVersion?: number;
     icons: Record<string, Blob>;
 }
 
@@ -56,7 +71,7 @@ export const removePack = (id: string) => DataStore.del(storeKey(id));
 export async function packState(pack: IconPackDefinition): Promise<PackState> {
     const stored = await getStoredPack(pack.id);
     if (!stored) return "missing";
-    return stored.additionsVersion === pack.additionsVersion ? "installed" : "outdated";
+    return stored.additionsVersion === pack.additionsVersion && (stored.desktopVersion ?? 0) === (pack.desktop?.version ?? 0) ? "installed" : "outdated";
 }
 
 const iconName = (path: string) => path.slice(path.lastIndexOf("/") + 1).replace(/@3x\.png$/, "");
@@ -71,13 +86,34 @@ async function listIcons(repo: string, ref: string, dir: string, fileUrl: (path:
         .map(entry => ({ name: iconName(entry.path), url: fileUrl(entry.path) }));
 }
 
+async function fetchBlob(name: string, url: string) {
+    for (let attempt = 1; ; attempt++) {
+        const res = await fetch(url);
+        if (res.ok) return res.blob();
+        if (attempt === 3) throw new Error(`Couldn't download ${name} (HTTP ${res.status})`);
+        await sleep(1000 * attempt);
+    }
+}
+
+async function mirror(image: Blob) {
+    const bitmap = await createImageBitmap(image);
+    const canvas = new OffscreenCanvas(bitmap.width, bitmap.height);
+    const context = canvas.getContext("2d");
+    if (!context) return image;
+    context.scale(-1, 1);
+    context.drawImage(bitmap, -bitmap.width, 0);
+    return canvas.convertToBlob({ type: "image/png" });
+}
+
 export async function downloadPack(pack: IconPackDefinition, onProgress: (done: number, total: number) => void) {
-    const { base } = pack;
+    const { base, desktop } = pack;
     const [baseIcons, additions] = await Promise.all([
-        base ? listIcons(base.repo, base.ref, base.dir, path => `https://cdn.jsdelivr.net/gh/${base.repo}@${base.ref}/${path}`) : [],
+        base ? listIcons(base.repo, base.ref, `${base.root}/${IMAGES_DIR}`, path => `https://cdn.jsdelivr.net/gh/${base.repo}@${base.ref}/${path}`) : [],
         listIcons(ADDITIONS_REPO, ADDITIONS_REF, `iconpacks/${pack.id}/${IMAGES_DIR}`, path => `https://raw.githubusercontent.com/${ADDITIONS_REPO}/${ADDITIONS_REF}/${path}`)
     ]);
-    const sources = new Map([...baseIcons, ...additions].map(icon => [icon.name, icon.url]));
+    const aliasFiles = Object.entries(desktop?.aliases ?? {}).flatMap(([name, alias]) =>
+        base && "file" in alias ? [{ name, url: `https://cdn.jsdelivr.net/gh/${base.repo}@${base.ref}/${base.root}/${alias.file}` }] : []);
+    const sources = new Map([...baseIcons, ...additions, ...aliasFiles].map(icon => [icon.name, icon.url]));
     if (!sources.size) throw new Error(`${pack.name} has no icons to download`);
 
     const queue = [...sources];
@@ -88,15 +124,20 @@ export async function downloadPack(pack: IconPackDefinition, onProgress: (done: 
     const worker = async () => {
         for (let next = queue.shift(); next; next = queue.shift()) {
             const [name, url] = next;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`Couldn't download ${name} (HTTP ${res.status})`);
-            icons[name] = await res.blob();
+            icons[name] = await fetchBlob(name, url);
             onProgress(++done, sources.size);
         }
     };
     await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
-    const stored: StoredPack = { additionsVersion: pack.additionsVersion, icons };
+    for (const [name, alias] of Object.entries(desktop?.aliases ?? {})) {
+        const image = icons["icon" in alias ? alias.icon : name];
+        if (image) icons[name] = alias.mirror ? await mirror(image) : image;
+    }
+    for (const [name, svg] of Object.entries(desktop?.icons ?? {}))
+        icons[name] ??= new Blob([svg], { type: "image/svg+xml" });
+
+    const stored: StoredPack = { additionsVersion: pack.additionsVersion, desktopVersion: desktop?.version, icons };
     await DataStore.set(storeKey(pack.id), stored);
     return stored;
 }
@@ -104,5 +145,5 @@ export async function downloadPack(pack: IconPackDefinition, onProgress: (done: 
 export const PREVIEW_ICONS = ["SettingsIcon", "BellIcon", "ChatIcon", "MicrophoneIcon", "HeadphonesIcon", "FriendsIcon", "GiftIcon", "PencilIcon", "TrashIcon", "MagnifyingGlassIcon"];
 
 export const previewUrl = ({ id, base }: IconPackDefinition, name: string) => base
-    ? `https://cdn.jsdelivr.net/gh/${base.repo}@${base.ref}/${base.dir}/${name}@3x.png`
+    ? `https://cdn.jsdelivr.net/gh/${base.repo}@${base.ref}/${base.root}/${IMAGES_DIR}/${name}@3x.png`
     : `https://raw.githubusercontent.com/${ADDITIONS_REPO}/${ADDITIONS_REF}/iconpacks/${id}/${IMAGES_DIR}/${name}@3x.png`;

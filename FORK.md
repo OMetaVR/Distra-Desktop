@@ -40,6 +40,11 @@ string literals, template literals and JSX text, never identifiers, imports, sto
   pack's redesign icons (rosiecord plus the additions in OMetaVR/Distra `iconpacks/`) into DataStore. A patch on every icon
   component (`size:"md"` destructure) swaps the artwork for a mask of the pack's icon; another hands it Discord's named icon
   registry. Pack ids and `additionsVersion` must match iOS's `src/lib/iconpackDownloads.ts`.
+  Desktop-only art lives in `iconPacks/desktop/<pack>/` (SVGs plus aliases to pack icons or files, some mirrored) and is
+  never part of the iOS download; bump that pack's desktop `version` when it changes. Discord's Lottie icons (mute,
+  deafen, settings, gift, GIF, sticker, apps) are swapped at the Lottie player's return, matched by markers or by the
+  webpack module of their animation data. Plugin icons are matched by button aria-label in `PLUGIN_ICONS` and drawn with
+  CSS masks. The plugin starts at `Init` so the pack is loaded before Discord's first render.
 - `src/distraplugins/customFonts/` - Distra plugin: Distra for iOS's Font Loader on desktop (Google Fonts or .ttf/.otf links,
   separate text and code fonts, headings, messages-only scope, size, weight, line spacing, matching gg sans). Registers
   FontFace objects under Discord's own family names. Its settings use iOS's `FontLoaderSettings` shape for future sync.
