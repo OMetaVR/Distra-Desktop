@@ -1,0 +1,15 @@
+.vc-stat-idler-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vc-stat-idler-results,
+.vc-stat-idler-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
