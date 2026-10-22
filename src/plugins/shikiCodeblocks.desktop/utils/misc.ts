@@ -20,12 +20,12 @@ import { resolveLang } from "@plugins/shikiCodeblocks.desktop/api/languages";
 import { HighlighterProps } from "@plugins/shikiCodeblocks.desktop/components/Highlighter";
 import { HljsSetting } from "@plugins/shikiCodeblocks.desktop/types";
 import { classNameFactory } from "@utils/css";
-import { DefaultExtractAndLoadChunksRegex, extractAndLoadChunksLazy, findByPropsLazy } from "@webpack";
+import { filters, find } from "@webpack";
 
 export const cl = classNameFactory("vc-shiki-");
 
-export const hljs: typeof import("highlight.js").default = findByPropsLazy("highlight", "registerLanguage");
-export const requireHljs = extractAndLoadChunksLazy(["codeBlock:{react("], new RegExp(`"hljs".+?${DefaultExtractAndLoadChunksRegex.source}`));
+// Discord replaced highlight.js with its own highlighter, so it is only used if some build still has it.
+export const getHljs = (): typeof import("highlight.js").default | null => find(filters.byProps("highlight", "registerLanguage"), { isIndirect: true });
 
 export const shouldUseHljs = ({
     lang,
@@ -34,7 +34,9 @@ export const shouldUseHljs = ({
     lang: HighlighterProps["lang"],
     tryHljs: HljsSetting,
 }) => {
-    const hljsLang = lang ? hljs?.getLanguage?.(lang) : null;
+    const hljs = getHljs();
+    if (!hljs) return false;
+    const hljsLang = lang ? hljs.getLanguage(lang) : null;
     const shikiLang = lang ? resolveLang(lang) : null;
     const langName = shikiLang?.name;
 

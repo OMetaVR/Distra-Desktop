@@ -35,18 +35,23 @@ let replacements: Map<unknown, string> | null = null;
 let rendering = false;
 let pluginIconStyle: HTMLStyleElement | null = null;
 
-// Plugins draw their own icons, so these are matched by their buttons and drawn with the pack's icon for the same thing.
-const PLUGIN_ICONS: { selector: string; icon: string; slash?: boolean; color?: string; }[] = [
-    { selector: '[aria-label="Disable Game Activity"]', icon: "GameControllerIcon" },
-    { selector: '[aria-label="Enable Game Activity"]', icon: "GameControllerIcon", slash: true, color: "var(--status-danger)" },
-    { selector: '[aria-label^="Typing Visible"]', icon: "KeyboardIcon" },
-    { selector: '[aria-label^="Typing Hidden"]', icon: "KeyboardIcon", slash: true },
-    { selector: '[aria-label="Open Translate Modal"]', icon: "LanguageIcon" },
-    { selector: '[aria-label="Encrypt Message"]', icon: "LockIcon" },
-    { selector: '[aria-label^="Schedule Mode OFF"]', icon: "CalendarIcon" },
-    { selector: '[aria-label^="Schedule Mode ON"]', icon: "CalendarIcon", color: "var(--status-positive)" },
-    { selector: '[aria-label="Favorite Images"]', icon: "ImageIcon" },
-    { selector: '[aria-label="Favorite Videos"]', icon: "VideoIcon" }
+// Plugins draw their own icons, so these are matched by their svg and drawn with the pack's icon for the same thing.
+// keepFill keeps the svg's own fill (platform indicators are coloured by status) by stretching its path over the whole icon.
+const PLUGIN_ICONS: { selector: string; icon: string; slash?: boolean; color?: string; keepFill?: boolean; }[] = [
+    { selector: '[aria-label="Disable Game Activity"] svg', icon: "GameControllerIcon" },
+    { selector: '[aria-label="Enable Game Activity"] svg', icon: "GameControllerIcon", slash: true, color: "var(--status-danger)" },
+    { selector: '[aria-label^="Typing Visible"] svg', icon: "KeyboardIcon" },
+    { selector: '[aria-label^="Typing Hidden"] svg', icon: "KeyboardIcon", slash: true },
+    { selector: '[aria-label="Open Translate Modal"] svg', icon: "LanguageIcon" },
+    { selector: '[aria-label="Encrypt Message"] svg', icon: "LockIcon" },
+    { selector: '[aria-label^="Schedule Mode OFF"] svg', icon: "CalendarIcon" },
+    { selector: '[aria-label^="Schedule Mode ON"] svg', icon: "CalendarIcon", color: "var(--status-positive)" },
+    { selector: '[aria-label="Favorite Images"] svg', icon: "ImageIcon" },
+    { selector: '[aria-label="Favorite Videos"] svg', icon: "VideoIcon" },
+    { selector: '.vc-platform-indicator svg[aria-label="Desktop"]', icon: "ScreenIcon", keepFill: true },
+    { selector: '.vc-platform-indicator svg[aria-label="Mobile"]', icon: "MobilePhoneIcon", keepFill: true },
+    { selector: '.vc-platform-indicator svg[aria-label="Web"]', icon: "GlobeEarthIcon", keepFill: true },
+    { selector: '.vc-platform-indicator svg[aria-label="Embedded (Console or Game)"]', icon: "GameControllerIcon", keepFill: true }
 ];
 
 const svgUrl = (inner: string) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${inner}</svg>`)}")`;
@@ -56,11 +61,12 @@ const SLASH_CUT = svgUrl(`<mask id="m"><rect width="24" height="24" fill="#fff"/
 const layer = (image: string, composite = "") => `${image} center / contain no-repeat ${composite}`;
 
 function pluginIconCss(urls: Map<string, string>) {
-    return PLUGIN_ICONS.filter(({ icon }) => urls.has(icon)).map(({ selector, icon, slash, color = "currentColor" }) => {
+    return PLUGIN_ICONS.filter(({ icon }) => urls.has(icon)).map(({ selector, icon, slash, color = "currentColor", keepFill }) => {
         const image = `url("${urls.get(icon)}")`;
+        if (keepFill) return `${selector} { mask: ${layer(image)}; }\n${selector} > path { d: path("M-5000 -5000H10000V10000H-5000Z"); }`;
         const mask = slash ? [layer(SLASH_LINE("#000"), "add"), layer(image, "intersect"), layer(SLASH_CUT)].join(", ") : layer(image);
         const background = slash ? `${layer(SLASH_LINE("#f23f43"))}, ${color}` : color;
-        return `${selector} svg { background: ${background}; mask: ${mask}; }\n${selector} svg > * { display: none; }`;
+        return `${selector} { background: ${background}; mask: ${mask}; }\n${selector} > * { display: none; }`;
     }).join("\n");
 }
 

@@ -94,6 +94,9 @@ these behaviors inside it.
 - `src/plugins/_core/settings.tsx`: falls back to `"top"` when `settingsLocation` is not a string.
 - `src/equicordplugins/pingNotifications/index.tsx`: uses `UserGuildSettingsStore.isChannelMuted`, since Discord removed
   `channel.isMuted()`.
+- `src/equicordplugins/ghosted/Boo.tsx`: no early return before its hooks (React error #310 whenever a DM's messages loaded late).
+- `src/plugins/shikiCodeblocks.desktop/`: patches Discord's arrow-function `codeBlock` rule, and only falls back to highlight.js when
+  Discord still ships it (it now uses its own highlighter, so the old lazy lookup threw on every code block).
 - `src/equicordplugins/musicControls/spotify/PlayerComponent.tsx`: one-line fork tweak.
 - `misc/install.sh`, `scripts/runInstaller.mjs`: download the installer from `OMetaVR/Distra-Installer`.
 - `others/Equilotl`: installer submodule.

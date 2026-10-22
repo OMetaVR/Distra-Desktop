@@ -22,9 +22,9 @@ import { shiki } from "@plugins/shikiCodeblocks.desktop/api/shiki";
 import { useShikiSettings } from "@plugins/shikiCodeblocks.desktop/hooks/useShikiSettings";
 import { useTheme } from "@plugins/shikiCodeblocks.desktop/hooks/useTheme";
 import { hex2Rgb } from "@plugins/shikiCodeblocks.desktop/utils/color";
-import { cl, hljs, requireHljs, shouldUseHljs } from "@plugins/shikiCodeblocks.desktop/utils/misc";
+import { cl, getHljs, shouldUseHljs } from "@plugins/shikiCodeblocks.desktop/utils/misc";
 import { useAwaiter, useIntersection } from "@utils/react";
-import { React, useEffect } from "@webpack/common";
+import { React } from "@webpack/common";
 
 import { ButtonRow } from "./ButtonRow";
 import { Code } from "./Code";
@@ -43,16 +43,7 @@ export interface HighlighterProps {
     isPreview: boolean;
 }
 
-let didLoadHljs = false;
 export const HighlighterContainer = (props: HighlighterProps) => {
-    const [_, _err, isPending] = useAwaiter(requireHljs);
-
-    useEffect(() => {
-        if (!isPending) didLoadHljs = true;
-    }, [isPending]);
-
-    if (!didLoadHljs && isPending) return null;
-
     return (
         <pre className={cl("container")}>
             <ErrorBoundary>
@@ -97,7 +88,7 @@ export const Highlighter = ({
     };
 
     let langName;
-    if (lang) langName = useHljs ? hljs?.getLanguage?.(lang)?.name : shikiLang?.name;
+    if (lang) langName = useHljs ? getHljs()?.getLanguage(lang)?.name : shikiLang?.name;
 
     return (
         <div
