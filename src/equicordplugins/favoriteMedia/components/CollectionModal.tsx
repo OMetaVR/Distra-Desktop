@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { FormSwitch } from "@components/FormSwitch";
 import { RenderModalProps } from "@vencord/discord-types";
 import { Button, FluxDispatcher, Modal, React, showToast, TextInput } from "@webpack/common";
 
@@ -20,6 +21,7 @@ interface CollectionModalProps extends RenderModalProps {
 export function CollectionModal({ type, collection, mediaToAdd, onClose, transitionState }: CollectionModalProps) {
     const [name, setName] = React.useState(collection?.name ?? "");
     const [color, setColor] = React.useState(collection?.color ?? "#5865F2");
+    const [censored, setCensored] = React.useState(collection?.censored ?? false);
     const [error, setError] = React.useState<string | null>(null);
 
     const isEditing = !!collection;
@@ -37,13 +39,13 @@ export function CollectionModal({ type, collection, mediaToAdd, onClose, transit
 
         try {
             if (isEditing) {
-                const success = await editCategory(type, collection!.id, name.trim(), color);
+                const success = await editCategory(type, collection!.id, name.trim(), color, censored);
                 if (!success) {
                     setError("A collection with this name already exists");
                     return;
                 }
             } else {
-                const success = await createCategory(type, name.trim(), color);
+                const success = await createCategory(type, name.trim(), color, undefined, censored);
                 if (!success) {
                     setError("A collection with this name already exists");
                     return;
@@ -68,7 +70,7 @@ export function CollectionModal({ type, collection, mediaToAdd, onClose, transit
         } catch (err) {
             setError("Failed to save collection");
         }
-    }, [name, color, type, collection, mediaToAdd, isEditing, onClose]);
+    }, [name, color, censored, type, collection, mediaToAdd, isEditing, onClose]);
 
     return (
         <Modal size="sm" transitionState={transitionState} onClose={onClose} title={isEditing ? "Edit Collection" : "Create Collection"}>
@@ -91,6 +93,13 @@ export function CollectionModal({ type, collection, mediaToAdd, onClose, transit
                             title="Collection color"
                         />
                     </div>
+                    <FormSwitch
+                        title="Censor"
+                        description="Blurs the cover of this collection."
+                        value={censored}
+                        onChange={setCensored}
+                        hideBorder
+                    />
                     {error && <div className="fm-modal-error">{error}</div>}
                 </div>
             </div>

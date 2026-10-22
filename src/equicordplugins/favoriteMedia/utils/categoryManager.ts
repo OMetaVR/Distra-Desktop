@@ -37,7 +37,8 @@ export async function createCategory(
     type: MediaType,
     name: string,
     color: string,
-    parentId?: number
+    parentId?: number,
+    censored = false
 ): Promise<boolean> {
     if (!validateCategoryName(name)) {
         return false;
@@ -57,7 +58,8 @@ export async function createCategory(
         id: getNewCategoryId(data.categories),
         name,
         color,
-        category_id: parentId
+        category_id: parentId,
+        censored
     };
 
     data.categories.push(newCategory);
@@ -71,7 +73,8 @@ export async function editCategory(
     type: MediaType,
     id: number,
     name: string,
-    color: string
+    color: string,
+    censored?: boolean
 ): Promise<boolean> {
     if (!validateCategoryName(name)) {
         return false;
@@ -94,6 +97,7 @@ export async function editCategory(
 
     category.name = name;
     category.color = color;
+    if (censored !== undefined) category.censored = censored;
 
     await saveMediaData(type, data);
 

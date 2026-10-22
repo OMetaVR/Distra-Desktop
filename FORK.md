@@ -45,6 +45,8 @@ string literals, template literals and JSX text, never identifiers, imports, sto
   deafen, settings, gift, GIF, sticker, apps) are swapped at the Lottie player's return, matched by markers or by the
   webpack module of their animation data. Plugin icons are matched by button aria-label in `PLUGIN_ICONS` and drawn with
   CSS masks. The plugin starts at `Init` so the pack is loaded before Discord's first render.
+- `src/distraplugins/statIdler.desktop/` - Distra plugin: idles Streaming badge progress by streaming the screen silently in
+  the current voice channel (STREAM_START with a desktop source). Badge ids: Streaming 19, Game Time 20, Game Variety 21.
 - `src/distraplugins/customFonts/` - Distra plugin: Distra for iOS's Font Loader on desktop (Google Fonts or .ttf/.otf links,
   separate text and code fonts, headings, messages-only scope, size, weight, line spacing, matching gg sans). Registers
   FontFace objects under Discord's own family names. Its settings use iOS's `FontLoaderSettings` shape for future sync.

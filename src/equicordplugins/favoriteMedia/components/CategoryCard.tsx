@@ -8,7 +8,7 @@ import { Alerts, ContextMenuApi, FluxDispatcher, Menu, openModal,React } from "@
 
 import { settings } from "..";
 import { CategoryCardProps } from "../types";
-import { deleteCategory } from "../utils/categoryManager";
+import { deleteCategory, editCategory } from "../utils/categoryManager";
 import { getMediaData } from "../utils/mediaManager";
 import { CollectionModal } from "./CollectionModal";
 
@@ -110,6 +110,16 @@ export function CategoryCard({ category, type, onClick, onDragOver, onDrop }: Ca
                         ));
                     }}
                 />
+                <Menu.MenuCheckboxItem
+                    id="fm-censor-collection"
+                    label="Censor"
+                    checked={!!category.censored}
+                    action={async () => {
+                        ContextMenuApi.closeContextMenu();
+                        await editCategory(type, category.id, category.name, category.color, !category.censored);
+                        FluxDispatcher.dispatch({ type: "FM_MEDIA_UPDATED" });
+                    }}
+                />
                 <Menu.MenuSeparator />
                 <Menu.MenuItem
                     id="fm-delete-collection"
@@ -137,7 +147,7 @@ export function CategoryCard({ category, type, onClick, onDragOver, onDrop }: Ca
         >
             {imageToUse ? (
                 <div
-                    className="fm-category-bg"
+                    className={`fm-category-bg ${category.censored ? "fm-category-censored" : ""}`}
                     style={{ backgroundImage: `url(${imageToUse})` }}
                 />
             ) : (

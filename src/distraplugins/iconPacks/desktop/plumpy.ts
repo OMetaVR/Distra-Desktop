@@ -29,12 +29,13 @@ import ThumbsDownIcon from "file://plumpy/ThumbsDownIcon.svg";
 import ThumbsUpIcon from "file://plumpy/ThumbsUpIcon.svg";
 import UserCheckIcon from "file://plumpy/UserCheckIcon.svg";
 import UserPlatformIcon from "file://plumpy/UserPlatformIcon.svg";
+import VoiceNormalIcon from "file://plumpy/VoiceNormalIcon.svg";
 
 import type { DesktopAdditions } from "../packs";
 
 // Desktop only: never part of the iOS pack download.
 export const PLUMPY_DESKTOP: DesktopAdditions = {
-    version: 1,
+    version: 2,
     aliases: {
         AppsIcon: { icon: "GridSquareIcon" },
         ArrowAngleRightUpIcon: { icon: "ArrowAngleLeftUpIcon", mirror: true },
@@ -82,7 +83,6 @@ export const PLUMPY_DESKTOP: DesktopAdditions = {
         UnknownGameIcon: { file: "images/native/game_icon_placeholder@3x.png" },
         UserCircleStatusIcon: { file: "modules/stage_channels/native/images/ic_person_status@3x.png" },
         VoiceLockIcon: { icon: "ChannelsVoiceLockedIcon" },
-        VoiceNormalIcon: { icon: "ChannelsVoiceNormalIcon" },
         VoiceWarningIcon: { icon: "ChannelsVoiceWarningIcon" },
         WindowLaunchIcon: { file: "images/native/ic_launch@3x.png" },
         XLargeIcon: { icon: "CloseLargeIcon" },
@@ -114,6 +114,7 @@ export const PLUMPY_DESKTOP: DesktopAdditions = {
         ThumbsDownIcon,
         ThumbsUpIcon,
         UserCheckIcon,
-        UserPlatformIcon
+        UserPlatformIcon,
+        VoiceNormalIcon
     }
 };

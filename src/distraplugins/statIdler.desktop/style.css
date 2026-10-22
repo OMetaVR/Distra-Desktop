@@ -5,7 +5,6 @@
     border-bottom: 1px solid var(--border-subtle);
 }
 
-.vc-stat-idler-results,
 .vc-stat-idler-actions {
     display: flex;
     flex-wrap: wrap;

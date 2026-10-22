@@ -248,6 +248,13 @@
     filter: blur(2px);
 }
 
+/* Scaled so the blur doesn't fade out at the card's edges */
+.fm-category-card .fm-category-bg.fm-category-censored,
+.fm-category-card:hover .fm-category-bg.fm-category-censored {
+    filter: blur(16px);
+    transform: scale(1.25);
+}
+
 .fm-category-overlay {
     position: absolute;
     inset: 0;

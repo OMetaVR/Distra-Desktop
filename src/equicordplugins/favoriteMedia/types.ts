@@ -26,6 +26,7 @@ export interface Category {
     color: string;
     thumbnail?: string;
     category_id?: number;
+    censored?: boolean;
 }
 
 export interface StoredMediaData {
