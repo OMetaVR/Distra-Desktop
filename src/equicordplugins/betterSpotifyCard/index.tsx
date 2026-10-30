@@ -5,9 +5,9 @@
  */
 
 import { definePluginSettings } from "@api/Settings";
+import { BaseText } from "@components/BaseText";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
-import { Text } from "@webpack/common";
 
 const settings = definePluginSettings({
     artistSeparator: {
@@ -56,9 +56,9 @@ export default definePlugin({
     settings,
     AlbumText(presence) {
         if (!settings.store.showAlbumName) return <></>;
-        return <Text variant="text-xs/normal" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} >
+        return <BaseText size="xs" style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} >
             {presence.assets.large_text}
-        </Text>;
+        </BaseText>;
     },
     patches: [
         {

@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Button } from "@components/Button";
 import { RenderModalProps } from "@vencord/discord-types";
-import { Button, ColorPicker, Modal, React, TextInput } from "@webpack/common";
+import { ColorPicker, Modal, React, TextInput } from "@webpack/common";
 
 import { CategoryModalProps } from "../types";
 
@@ -120,7 +121,7 @@ export function CategoryModal({ category, parentId, onSave, onClose, transitionS
                 </Button>
                 <Button
                     onClick={onClose}
-                    color={Button.Colors.TRANSPARENT}
+                    variant="secondary"
                 >
                     Cancel
                 </Button>

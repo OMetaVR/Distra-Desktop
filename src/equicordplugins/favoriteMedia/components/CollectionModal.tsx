@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+import { Button } from "@components/Button";
 import { FormSwitch } from "@components/FormSwitch";
 import { RenderModalProps } from "@vencord/discord-types";
-import { Button, FluxDispatcher, Modal, React, showToast, TextInput } from "@webpack/common";
+import { FluxDispatcher, Modal, React, showToast, TextInput } from "@webpack/common";
 
 import { Category, Media, MediaType } from "../types";
 import { createCategory, editCategory } from "../utils/categoryManager";
@@ -104,10 +105,10 @@ export function CollectionModal({ type, collection, mediaToAdd, onClose, transit
                 </div>
             </div>
             <div className="fm-modal-footer">
-                <Button onClick={handleSave} color={Button.Colors.BRAND}>
+                <Button onClick={handleSave}>
                     {isEditing ? "Save" : "Create"}
                 </Button>
-                <Button onClick={onClose} look={Button.Looks.LINK} className="fm-cancel-btn">
+                <Button onClick={onClose} variant="link" className="fm-cancel-btn">
                     Cancel
                 </Button>
             </div>
