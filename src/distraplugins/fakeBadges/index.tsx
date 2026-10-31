@@ -10,7 +10,7 @@ import { ProfileBadge } from "@api/Badges";
 import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
 import { Button } from "@components/Button";
-import { HeadingTertiary } from "@components/Heading";
+import { Heading } from "@components/Heading";
 import { Notice } from "@components/Notice";
 import { Paragraph } from "@components/Paragraph";
 import { EquicordDevs } from "@utils/constants";
@@ -121,7 +121,7 @@ function BadgeEditor() {
                 this plugin sees them too, always labeled as fake.
             </Paragraph>
 
-            <HeadingTertiary className={Margins.top16}>Preview</HeadingTertiary>
+            <Heading tag="h4" className={Margins.top16}>Preview</Heading>
             <div className={cl("preview")}>
                 {selected.length ? (
                     <div className={cl("row")} role="group" aria-label="Badge preview">
@@ -153,7 +153,7 @@ function BadgeEditor() {
 
             {BADGE_GROUPS.map(group => (
                 <div key={group.name} className={Margins.top16}>
-                    <HeadingTertiary className={Margins.bottom8}>{group.name}</HeadingTertiary>
+                    <Heading tag="h4" className={Margins.bottom8}>{group.name}</Heading>
                     <div className={cl("grid")}>
                         {group.badges.map(badge => {
                             const position = selected.indexOf(badge) + 1;

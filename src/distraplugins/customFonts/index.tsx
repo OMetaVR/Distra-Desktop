@@ -11,7 +11,7 @@ import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
 import { Button } from "@components/Button";
 import { FormSwitch } from "@components/FormSwitch";
-import { HeadingTertiary } from "@components/Heading";
+import { Heading } from "@components/Heading";
 import { Notice } from "@components/Notice";
 import { Paragraph } from "@components/Paragraph";
 import { EquicordDevs } from "@utils/constants";
@@ -54,7 +54,7 @@ function AdjustPanel({ group, font }: { group: FontGroup; font: InstalledFont; }
 
     return (
         <div className={cl("panel")}>
-            <HeadingTertiary>{group === "text" ? "Text" : "Code"} font: {font.name}</HeadingTertiary>
+            <Heading tag="h4">{group === "text" ? "Text" : "Code"} font: {font.name}</Heading>
             <FormSwitch
                 title={`Match ${group === "text" ? "gg sans" : "gg mono"}'s size`}
                 description="Scales the font so its letters are about as tall and wide as Discord's font."
@@ -185,7 +185,7 @@ function FontsPage() {
 
             {error && <Notice variant="danger">{error}</Notice>}
 
-            <HeadingTertiary className={Margins.top8}>Add fonts</HeadingTertiary>
+            <Heading tag="h4" className={Margins.top8}>Add fonts</Heading>
             <div className={cl("row")}>
                 <TextInput value={link} onChange={setLink} placeholder="Link to a .ttf or .otf file" />
                 <Button size="small" disabled={!link.trim() || !!busy} onClick={() => install("that font", () => installFontFromUrl(link)).then(() => setLink(""))}>
@@ -201,7 +201,7 @@ function FontsPage() {
 
             {fonts.length > 0 && (
                 <>
-                    <HeadingTertiary className={Margins.top8}>Installed</HeadingTertiary>
+                    <Heading tag="h4" className={Margins.top8}>Installed</Heading>
                     <div className={cl("list")}>
                         {fonts.map(font => (
                             <div key={font.id} className={cl("row")}>

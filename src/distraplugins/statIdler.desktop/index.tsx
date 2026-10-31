@@ -9,7 +9,7 @@ import "./style.css";
 import { definePluginSettings } from "@api/Settings";
 import { BaseText } from "@components/BaseText";
 import { Button } from "@components/Button";
-import { HeadingTertiary } from "@components/Heading";
+import { Heading } from "@components/Heading";
 import { Notice } from "@components/Notice";
 import { Paragraph } from "@components/Paragraph";
 import { EquicordDevs, IS_WINDOWS } from "@utils/constants";
@@ -79,10 +79,10 @@ function Panel() {
                 This streams as you on your real account, so people in the call see it. Discord could treat faked activity as abuse, so use it at your own risk.
             </Notice>
 
-            <HeadingTertiary className={Margins.top16}>Your progress</HeadingTertiary>
+            <Heading tag="h4" className={Margins.top16}>Your progress</Heading>
             <Progress />
 
-            <HeadingTertiary className={Margins.top16}>Streaming</HeadingTertiary>
+            <Heading tag="h4" className={Margins.top16}>Streaming</Heading>
             <Paragraph className={Margins.bottom8}>Streams your screen without sound in the voice channel you're in. Discord counts real stream time, so this has to stay running.</Paragraph>
             <div className={cl("actions")}>
                 {stream
