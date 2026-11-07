@@ -50,7 +50,9 @@
     background: var(--background-mod-subtle);
     color: var(--text-default);
     cursor: pointer;
-    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
+    transition:
+        background-color 0.1s ease-in-out,
+        border-color 0.1s ease-in-out;
 }
 
 .vc-fake-badges-tile:hover {

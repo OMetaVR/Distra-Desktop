@@ -76,12 +76,10 @@
     padding: 1rem;
 }
 
-
 .vc-spotify-lyrics-search-result {
     padding: 0.5rem;
     border-bottom: 1px solid var(--background-secondary);
 }
-
 
 .vc-spotify-lyrics-search-result-artist {
     color: var(--text-muted);

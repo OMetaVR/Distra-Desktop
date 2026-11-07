@@ -34,7 +34,7 @@ Run these, in order, and fix anything that fails (each must exit 0):
 pnpm install --frozen-lockfile
 pnpm testTsc
 pnpm lint
-pnpm lint-styles
+pnpm fmt:check
 pnpm buildStandalone
 pnpm buildWebStandalone
 pnpm generatePluginJson dist/plugins.json

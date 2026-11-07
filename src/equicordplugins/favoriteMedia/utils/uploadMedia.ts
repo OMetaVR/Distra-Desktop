@@ -17,21 +17,6 @@ const logger = new Logger("FavoriteMedia:Upload");
 
 const CloudUploader = findLazy(m => m.prototype?.trackUploadFinished) as typeof CloudUpload;
 
-function isMediaUrl(url: string): boolean {
-    const mediaExtensions = [
-        "png", "jpg", "jpeg", "gif", "webp", "bmp", "svg",
-        "mp4", "webm", "mov", "avi", "mkv",
-        "mp3", "wav", "ogg", "flac", "m4a", "aac"
-    ];
-
-    try {
-        const pathname = new URL(url).pathname.toLowerCase();
-        return mediaExtensions.some(ext => pathname.includes(`.${ext}`));
-    } catch {
-        return false;
-    }
-}
-
 function transformUrlForFetch(url: string, type: MediaType): string {
     if (type === "file") {
         return url;

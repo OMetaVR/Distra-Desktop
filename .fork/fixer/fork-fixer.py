@@ -41,7 +41,7 @@ ALLOWED_TOOLS = [
     "Bash(git:*)", "Bash(gh issue:*)", "Bash(gh run view:*)", "Bash(gh run list:*)",
     "Bash(ls:*)", "Bash(cat:*)", "Bash(grep:*)", "Bash(python3 -I -c:*)",
     "Bash(pnpm install --frozen-lockfile:*)", "Bash(pnpm testTsc:*)", "Bash(pnpm lint:*)",
-    "Bash(pnpm lint-styles:*)", "Bash(pnpm buildStandalone:*)", "Bash(pnpm buildWebStandalone:*)",
+    "Bash(pnpm fmt:check:*)", "Bash(pnpm buildStandalone:*)", "Bash(pnpm buildWebStandalone:*)",
     "Bash(pnpm generatePluginJson:*)",
 ]
 

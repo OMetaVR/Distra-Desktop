@@ -113,7 +113,7 @@ validate() {
   pnpm install --frozen-lockfile &&
   pnpm testTsc &&
   pnpm lint &&
-  pnpm lint-styles &&
+  pnpm fmt:check &&
   pnpm buildStandalone &&
   pnpm buildWebStandalone &&
   pnpm generatePluginJson dist/plugins.json

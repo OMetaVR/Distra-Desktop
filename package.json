@@ -32,6 +32,7 @@
         "uninject": "node scripts/runInstaller.mjs -- --uninstall",
         "repair": "node scripts/runInstaller.mjs -- --repair",
         "lint": "oxlint",
+        "lint-styles": "pnpm fmt:check",
         "fmt": "oxfmt \"**/*.{css,html,json,yml,yaml}\"",
         "fmt:check": "pnpm fmt --check",
         "lint:fix": "pnpm lint --fix",
